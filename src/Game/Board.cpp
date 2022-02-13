@@ -2,27 +2,27 @@
 
 #include <cassert>
 
-Board::Board(int numberOfHouses, int startStonesPerHouse) :
+Board::Board(int numberOfHouses, int startSeedsPerHouse) :
     m_numberOfHouses{numberOfHouses},
-    m_stoneValues{}
+    m_seedNumbers{}
 {
     for (Pit pit = this->pit(Player::One, 1); !pit.isOverflow(); ++pit)
-        m_stoneValues.emplace_back(static_cast<int>(pit.isHouse()) * startStonesPerHouse);
+        m_seedNumbers.emplace_back(static_cast<int>(pit.isHouse()) * startSeedsPerHouse);
 }
 
-int Board::stoneCount(const Pit &pit) const
+int Board::seedCount(const Pit &pit) const
 {
-    return m_stoneValues.at(arrayIndex(pit));
+    return m_seedNumbers.at(arrayIndex(pit));
 }
 
-void Board::incrementStoneCount(const Pit &pit)
+void Board::incrementSeedCount(const Pit &pit)
 {
-    m_stoneValues.at(arrayIndex(pit))++;
+    m_seedNumbers.at(arrayIndex(pit))++;
 }
 
-void Board::clearStoneCount(const Pit &pit)
+void Board::clearSeedCount(const Pit &pit)
 {
-    m_stoneValues.at(arrayIndex(pit)) = 0;
+    m_seedNumbers.at(arrayIndex(pit)) = 0;
 }
 
 int Board::numberOfHouses() const
