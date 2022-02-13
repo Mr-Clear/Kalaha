@@ -1,69 +1,50 @@
-#include "Game/Pit.h"
+#include "Game/Board.h"
 
 #include <gtest/gtest.h>
 
-TEST(PitTest, constructor)
-{
-    EXPECT_DEATH(Pit(Player::One, 0), "");
-    EXPECT_DEATH(Pit(Player::One, 8), "");
-    EXPECT_DEATH(Pit(Player::One, -1), "");
-    EXPECT_DEATH(Pit(Player::Two, 0), "");
-    EXPECT_DEATH(Pit(Player::Two, 8), "");
-    EXPECT_DEATH(Pit(Player::Two, -1), "");
-}
-
 TEST(PitTest, isHouse)
 {
-    EXPECT_EQ(true, Pit(Player::One, 1).isHouse());
-    EXPECT_EQ(true, Pit(Player::One, 6).isHouse());
-    EXPECT_EQ(false, Pit(Player::One, 7).isHouse());
-    EXPECT_EQ(true, Pit(Player::Two, 2).isHouse());
-    EXPECT_EQ(true, Pit(Player::Two, 5).isHouse());
-    EXPECT_EQ(false, Pit(Player::Two, 7).isHouse());
+    Board b{7, 2};
+    EXPECT_EQ(true, b.pit(Player::One, 1).isHouse());
+    EXPECT_EQ(true, b.pit(Player::One, 7).isHouse());
+    EXPECT_EQ(false, b.pit(Player::One, 8).isHouse());
+    EXPECT_EQ(true, b.pit(Player::Two, 2).isHouse());
+    EXPECT_EQ(true, b.pit(Player::Two, 5).isHouse());
+    EXPECT_EQ(false, b.pit(Player::Two, 8).isHouse());
 }
 
 TEST(PitTest, isStore)
 {
-    EXPECT_EQ(false, Pit(Player::One, 1).isStore());
-    EXPECT_EQ(false, Pit(Player::One, 6).isStore());
-    EXPECT_EQ(true, Pit(Player::One, 7).isStore());
-    EXPECT_EQ(false, Pit(Player::Two, 2).isStore());
-    EXPECT_EQ(false, Pit(Player::Two, 5).isStore());
-    EXPECT_EQ(true, Pit(Player::Two, 7).isStore());
+    Board b{5, 2};
+    EXPECT_EQ(false, b.pit(Player::One, 1).isStore());
+    EXPECT_EQ(false, b.pit(Player::One, 5).isStore());
+    EXPECT_EQ(true, b.pit(Player::One, 6).isStore());
+    EXPECT_EQ(false, b.pit(Player::Two, 2).isStore());
+    EXPECT_EQ(false, b.pit(Player::Two, 4).isStore());
+    EXPECT_EQ(true, b.pit(Player::Two, 6).isStore());
 }
 
 TEST(PitTest, incrementOperator)
 {
-    Pit a{Player::One, 1};
-    EXPECT_EQ(a, Pit(Player::One, 1));
+    Board b{3, 2};
+    Pit a = b.pit(Player::One, 1);
+    EXPECT_EQ(a, b.pit(Player::One, 1));
     ++a;
-    EXPECT_EQ(a, Pit(Player::One, 2));
+    EXPECT_EQ(a, b.pit(Player::One, 2));
     ++a;
-    EXPECT_EQ(a, Pit(Player::One, 3));
+    EXPECT_EQ(a, b.pit(Player::One, 3));
     ++a;
-    EXPECT_EQ(a, Pit(Player::One, 4));
+    EXPECT_EQ(a, b.pit(Player::One, 4));
     ++a;
-    EXPECT_EQ(a, Pit(Player::One, 5));
+    EXPECT_EQ(a, b.pit(Player::Two, 1));
     ++a;
-    EXPECT_EQ(a, Pit(Player::One, 6));
+    EXPECT_EQ(a, b.pit(Player::Two, 2));
     ++a;
-    EXPECT_EQ(a, Pit(Player::One, 7));
+    EXPECT_EQ(a, b.pit(Player::Two, 3));
     ++a;
-    EXPECT_EQ(a, Pit(Player::Two, 1));
+    EXPECT_EQ(a, b.pit(Player::Two, 4));
     ++a;
-    EXPECT_EQ(a, Pit(Player::Two, 2));
+    EXPECT_EQ(a, b.pit(Player::One, 1));
     ++a;
-    EXPECT_EQ(a, Pit(Player::Two, 3));
-    ++a;
-    EXPECT_EQ(a, Pit(Player::Two, 4));
-    ++a;
-    EXPECT_EQ(a, Pit(Player::Two, 5));
-    ++a;
-    EXPECT_EQ(a, Pit(Player::Two, 6));
-    ++a;
-    EXPECT_EQ(a, Pit(Player::Two, 7));
-    ++a;
-    EXPECT_EQ(a, Pit(Player::One, 1));
-    ++a;
-    EXPECT_EQ(a, Pit(Player::One, 2));
+    EXPECT_EQ(a, b.pit(Player::One, 2));
 }

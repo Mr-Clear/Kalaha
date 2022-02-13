@@ -3,20 +3,23 @@
 #include "Game/Pit.h"
 #include "Game/Player.h"
 
-#include <array>
+#include <vector>
 
 class Board
 {
 public:
-    Board(int stones);
+    Board(int numberOfHouses, int stones);
 
-    int stoneCount(const Pit &pit);
+    [[nodiscard]] int numberOfHouses() const;
+    [[nodiscard]] Pit pit(Player player, int pitNumber);
+    [[nodiscard]] int stoneCount(const Pit &pit) const;
     void incrementStoneCount(const Pit &pit);
     void clearStoneCount(const Pit &pit);
 
 private:
-    std::array<int, 14> m_stoneValues;
+    const int m_numberOfHouses;
+    std::vector<int> m_stoneValues;
 
-    int arrayIndex(const Pit &pit);
+    [[nodiscard]] int arrayIndex(const Pit &pit) const;
 };
 

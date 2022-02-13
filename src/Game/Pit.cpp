@@ -1,13 +1,6 @@
 #include "Pit.h"
 
-#include <cassert>
-
-Pit::Pit(Player player, char number) :
-    m_player{player},
-    m_number{number}
-{
-    assert(number >= 1 && number <= 7);
-}
+#include "Game/Board.h"
 
 bool Pit::operator==(const Pit &o) const
 {
@@ -20,19 +13,19 @@ Player Pit::player() const
     return m_player;
 }
 
-char Pit::number() const
+int Pit::number() const
 {
     return m_number;
 }
 
 bool Pit::isHouse() const
 {
-    return m_number < 7;
+    return m_number <= m_board.numberOfHouses();
 }
 
 bool Pit::isStore() const
 {
-    return m_number == 7;
+    return m_number == m_board.numberOfHouses() + 1;
 }
 
 bool Pit::isOverflow() const
@@ -43,7 +36,7 @@ bool Pit::isOverflow() const
 Pit &Pit::operator++()
 {
     m_number++;
-    if (m_number > 7)
+    if (m_number > m_board.numberOfHouses() + 1)
     {
         m_number = 1;
         ++m_player;
@@ -52,3 +45,9 @@ Pit &Pit::operator++()
     }
     return *this;
 }
+
+Pit::Pit(const Board &board, Player player, int number) :
+    m_board{board},
+    m_player{player},
+    m_number{number}
+{ }

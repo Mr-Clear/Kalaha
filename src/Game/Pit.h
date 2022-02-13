@@ -2,15 +2,15 @@
 
 #include "Player.h"
 
+class Board;
+
 class Pit
 {
 public:
-    Pit(Player player, char number);
-
     bool operator==(const Pit &o) const;
 
     [[nodiscard]] Player player() const;
-    [[nodiscard]] char number() const;
+    [[nodiscard]] int number() const;
 
     [[nodiscard]] bool isHouse() const;
     [[nodiscard]] bool isStore() const;
@@ -20,8 +20,12 @@ public:
     Pit &operator++();
 
 private:
+    friend class Board;
+    Pit(const Board &board, Player player, int number);
+
+    const Board &m_board;
     Player m_player;
-    char m_number;
+    int m_number;
     bool m_overflow = false;
 };
 
