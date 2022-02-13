@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player operator!(Player &p)
+Player operator!(const Player &p)
 {
     return (p == Player::One) ? Player::Two : Player::One;
 }

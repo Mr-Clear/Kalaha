@@ -8,5 +8,5 @@ enum class Player : char
     Two
 };
 
-Player operator!(Player &p);
+Player operator!(const Player &p);
 Player &operator++(Player &p);

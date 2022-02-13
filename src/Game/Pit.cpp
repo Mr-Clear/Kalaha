@@ -2,6 +2,8 @@
 
 #include "Game/Board.h"
 
+#include <cassert>
+
 bool Pit::operator==(const Pit &o) const
 {
     return m_player == o.player() &&
@@ -26,6 +28,12 @@ bool Pit::isHouse() const
 bool Pit::isStore() const
 {
     return m_number == m_board.numberOfHouses() + 1;
+}
+
+Pit Pit::oppositeHouse() const
+{
+    assert(isHouse());
+    return m_board.house(!m_player, m_board.numberOfHouses() - m_number + 1);
 }
 
 bool Pit::isOverflow() const

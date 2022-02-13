@@ -14,6 +14,7 @@ public:
 
     [[nodiscard]] bool isHouse() const;
     [[nodiscard]] bool isStore() const;
+    [[nodiscard]] Pit oppositeHouse() const;
 
     [[nodiscard]] bool isOverflow() const;
 
