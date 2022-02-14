@@ -29,6 +29,7 @@ public:
 private:
     friend class Board;
     FRIEND_TEST(ConsoleOutputTest, mocked);
+    FRIEND_TEST(GameTest, mocked);
 
     Pit(const IBoard &board, PlayerNumber player, int number);
 

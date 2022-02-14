@@ -2,10 +2,10 @@
 
 #include "Game/Board.h"
 
-class Output
+class IOutput
 {
 public:
-    virtual ~Output() = default;
+    virtual ~IOutput() = default;
 
     virtual void showTurn(int number, PlayerNumber player) = 0;
     virtual void showBoard(const IBoard &board) = 0;

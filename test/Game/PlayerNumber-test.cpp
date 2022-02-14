@@ -2,29 +2,32 @@
 
 #include <gtest/gtest.h>
 
+using PlayerNumber::One;
+using PlayerNumber::Two;
+
 TEST(PlayerTest, notOperator)
 {
-    PlayerNumber p = PlayerNumber::One;
-    EXPECT_EQ(!p,  PlayerNumber::Two);
-    EXPECT_EQ(p,  PlayerNumber::One);
+    PlayerNumber p = One;
+    EXPECT_EQ(!p, Two);
+    EXPECT_EQ(p, One);
     p = !p;
-    EXPECT_EQ(p,  PlayerNumber::Two);
-    EXPECT_EQ(!p,  PlayerNumber::One);
+    EXPECT_EQ(p,Two);
+    EXPECT_EQ(!p, One);
     p = !p;
-    EXPECT_EQ(!p,  PlayerNumber::Two);
-    EXPECT_EQ(p,  PlayerNumber::One);
+    EXPECT_EQ(!p, Two);
+    EXPECT_EQ(p, One);
 }
 
 TEST(PlayerTest, incrementOperator)
 {
-    PlayerNumber p = PlayerNumber::One;
-    EXPECT_EQ(p,  PlayerNumber::One);
+    PlayerNumber p = One;
+    EXPECT_EQ(p, One);
     ++p;
-    EXPECT_EQ(p,  PlayerNumber::Two);
+    EXPECT_EQ(p, Two);
     ++p;
-    EXPECT_EQ(p,  PlayerNumber::One);
+    EXPECT_EQ(p, One);
     ++p;
-    EXPECT_EQ(p,  PlayerNumber::Two);
+    EXPECT_EQ(p, Two);
     ++p;
-    EXPECT_EQ(p,  PlayerNumber::One);
+    EXPECT_EQ(p, One);
 }

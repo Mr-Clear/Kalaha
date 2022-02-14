@@ -6,18 +6,21 @@
 #include <map>
 #include <memory>
 
-class Output;
+class IOutput;
 
 class Game
 {
 public:
-    Game(int numberOfHouses, int startSeedsPerHouse, Output &output, std::map<PlayerNumber, std::shared_ptr<IPlayer>> &players);
+    Game(int numberOfHouses, int startSeedsPerHouse, IOutput &output, std::map<PlayerNumber, std::shared_ptr<IPlayer>> &players);
 
     void start(PlayerNumber startPlayer);
 
 private:
-    Board m_board;
-    Output &m_output;
+    std::unique_ptr<IBoard> m_board;
+    IOutput &m_output;
     std::map<PlayerNumber, std::shared_ptr<IPlayer>> &m_players;
+
+    FRIEND_TEST(GameTest, mocked);
+    Game(std::unique_ptr<IBoard> board, IOutput &output, std::map<PlayerNumber, std::shared_ptr<IPlayer>> &players);
 };
 

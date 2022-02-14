@@ -1,10 +1,13 @@
 #include "PlayerNumber.h"
 
-const std::vector<PlayerNumber> ALL_PLAYERS = {PlayerNumber::One, PlayerNumber::Two};
+using PlayerNumber::One;
+using PlayerNumber::Two;
+
+const std::vector<PlayerNumber> ALL_PLAYERS = {One, Two};
 
 PlayerNumber operator!(const PlayerNumber &p)
 {
-    return (p == PlayerNumber::One) ? PlayerNumber::Two : PlayerNumber::One;
+    return (p == One) ? Two : One;
 }
 
 PlayerNumber &operator++(PlayerNumber &p)
@@ -15,6 +18,6 @@ PlayerNumber &operator++(PlayerNumber &p)
 
 std::ostream &operator<<(std::ostream& os, PlayerNumber player)
 {
-    os << (player == PlayerNumber::One ? "Player One" : "Player Two");
+    os << (player == One ? "Player One" : "Player Two");
     return os;
 }

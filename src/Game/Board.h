@@ -18,6 +18,8 @@ public:
         std::unordered_set<Pit> changedPits;
     };
 
+    virtual ~IBoard() = default;
+
     [[nodiscard]] virtual int numberOfHouses() const = 0;
     [[nodiscard]] virtual Pit pit(PlayerNumber player, int pitNumber) const = 0;
     [[nodiscard]] virtual Pit house(PlayerNumber player, int houseNumber) const = 0;

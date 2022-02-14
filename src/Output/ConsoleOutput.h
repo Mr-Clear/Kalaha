@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Output/Output.h"
+#include "Output/IOutput.h"
 
 #include <iostream>
 #include <string>
@@ -13,7 +13,7 @@
  * ║    │  4 │  4 │  4 │  4 │  4 │  4 │    ║
  * ╚════╧════╧════╧════╧════╧════╧════╧════╝
  */
-class ConsoleOutput : public Output
+class ConsoleOutput : public IOutput
 {
 public:
     ConsoleOutput(int maxCountWidth = 2, std::ostream &stream = std::cout);
