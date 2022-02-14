@@ -81,6 +81,13 @@ std::optional<PlayerNumber> Board::moveRemainingSeedsToStore()
     return {};
 }
 
+Board::Board(const std::vector<int> &seedNumbers) :
+    m_numberOfHouses{static_cast<int>(seedNumbers.size()) / 2 - 1},
+    m_seedNumbers{seedNumbers}
+{
+    assert(!(seedNumbers.size() % 2));
+}
+
 int Board::numberOfHouses() const
 {
     return m_numberOfHouses;
