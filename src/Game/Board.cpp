@@ -56,7 +56,7 @@ std::optional<Player> Board::saw(const Pit &startPit)
 void Board::moveRemainingSeedsToStore()
 {
     assert(checkForGameEnd());
-    for (Player player : {Player::One, Player::Two})
+    for (Player player : ALL_PLAYERS)
     {
         int c = 0;
         for (Pit p = house(player, 1); p.isHouse(); ++p)
@@ -124,7 +124,7 @@ void Board::checkAndHandleEmptyOwnHouse(const Pit &pit, Player player)
 
 bool Board::checkForGameEnd()
 {
-    for (Player player : {Player::One, Player::Two})
+    for (Player player : ALL_PLAYERS)
     {
         int c = 0;
         for (Pit p = house(player, 1); p.isHouse(); ++p)

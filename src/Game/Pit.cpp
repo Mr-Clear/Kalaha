@@ -59,7 +59,7 @@ Pit &Pit::operator++()
     return *this;
 }
 
-Pit::Pit(const Board &board, Player player, int number) :
+Pit::Pit(const IBoard &board, Player player, int number) :
     m_board{board},
     m_player{player},
     m_number{number}

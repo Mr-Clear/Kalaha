@@ -1,11 +1,12 @@
 #include <iostream>
 
-#include "Game/Board.h"
+#include "Game/Game.h"
+#include "Output/ConsoleOutput.h"
 
-using std::cout, std::cerr, std::cin, std::endl;
 
 int main()
 {
-    cout << "Hello World!" << endl;
+    ConsoleOutput output;
+    Game g{6, 4, output};
     return 0;
 }

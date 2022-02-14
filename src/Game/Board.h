@@ -6,20 +6,34 @@
 #include <optional>
 #include <vector>
 
-class Board
+class IBoard
+{
+public:
+    [[nodiscard]] virtual int numberOfHouses() const = 0;
+    [[nodiscard]] virtual Pit pit(Player player, int pitNumber) const = 0;
+    [[nodiscard]] virtual Pit house(Player player, int houseNumber) const = 0;
+    [[nodiscard]] virtual Pit store(Player player) const = 0;
+    [[nodiscard]] virtual int seedCount(const Pit &pit) const = 0;
+
+    virtual std::optional<Player> saw(const Pit &startPit) = 0;
+
+    virtual void moveRemainingSeedsToStore() = 0;
+};
+
+class Board : public IBoard
 {
 public:
     Board(int numberOfHouses, int startSeedsPerHouse);
 
-    [[nodiscard]] int numberOfHouses() const;
-    [[nodiscard]] Pit pit(Player player, int pitNumber) const;
-    [[nodiscard]] Pit house(Player player, int houseNumber) const;
-    [[nodiscard]] Pit store(Player player) const;
-    [[nodiscard]] int seedCount(const Pit &pit) const;
+    [[nodiscard]] int numberOfHouses() const override;
+    [[nodiscard]] Pit pit(Player player, int pitNumber) const override;
+    [[nodiscard]] Pit house(Player player, int houseNumber) const override;
+    [[nodiscard]] Pit store(Player player) const override;
+    [[nodiscard]] int seedCount(const Pit &pit) const override;
 
-    std::optional<Player> saw(const Pit &startPit);
+    std::optional<Player> saw(const Pit &startPit) override;
 
-    void moveRemainingSeedsToStore();
+    void moveRemainingSeedsToStore() override;
 
 private:
     const int m_numberOfHouses;

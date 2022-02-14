@@ -2,7 +2,9 @@
 
 #include "Player.h"
 
-class Board;
+#include <gtest/gtest_prod.h>
+
+class IBoard;
 
 class Pit
 {
@@ -23,9 +25,10 @@ public:
 
 private:
     friend class Board;
-    Pit(const Board &board, Player player, int number);
+    FRIEND_TEST(ConsoleOutputTest, mocked);
+    Pit(const IBoard &board, Player player, int number);
 
-    const Board &m_board;
+    const IBoard &m_board;
     Player m_player;
     int m_number;
     bool m_overflow = false;
