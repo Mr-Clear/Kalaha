@@ -45,7 +45,7 @@ std::optional<PlayerNumber> Board::saw(const Pit &startPit)
 
     const Pit endPit = distributeSeeds(startPit, seeds);
 
-    checkAndHandleEmptyOwnHouse(endPit, player);
+    checkAndHandleCapture(endPit, player);
 
     if (checkForGameEnd())
         return {};
@@ -121,9 +121,9 @@ void Board::clearSeedCount(const Pit &pit)
         m_lastTurn.value().changedPits.insert(pit);
 }
 
-void Board::checkAndHandleEmptyOwnHouse(const Pit &pit, PlayerNumber player)
+void Board::checkAndHandleCapture(const Pit &pit, PlayerNumber player)
 {
-    if (pit.isHouse() && pit.player() == player && seedCount(pit) == 1)
+    if (pit.isHouse() && pit.player() == player && seedCount(pit) == 1 && seedCount(pit.oppositeHouse()))
     {
         const Pit opposite = pit.oppositeHouse();
         const int capturedSeeds = seedCount(opposite) + 1;

@@ -2,7 +2,6 @@
 
 #include <gtest/gtest.h>
 
-
 TEST(BoardTest, constructor)
 {
     Board b{6, 11};

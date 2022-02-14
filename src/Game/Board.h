@@ -55,7 +55,7 @@ private:
     void incrementSeedCount(const Pit &pit);
     void addSeeds(const Pit &pit, int seedNumber);
     void clearSeedCount(const Pit &pit);
-    void checkAndHandleEmptyOwnHouse(const Pit &pit, PlayerNumber player);
+    void checkAndHandleCapture(const Pit &pit, PlayerNumber player);
     bool checkForGameEnd();
     Pit distributeSeeds(Pit pit, int seedCount);
 };
