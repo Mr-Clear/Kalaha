@@ -6,7 +6,7 @@ Board::Board(int numberOfHouses, int startSeedsPerHouse) :
     m_numberOfHouses{numberOfHouses},
     m_seedNumbers{}
 {
-    for (Pit pit = this->pit(Player::One, 1); !pit.isOverflow(); ++pit)
+    for (Pit pit = this->pit(PlayerNumber::One, 1); !pit.isOverflow(); ++pit)
         m_seedNumbers.emplace_back(static_cast<int>(pit.isHouse()) * startSeedsPerHouse);
 }
 
@@ -17,7 +17,7 @@ int Board::seedCount(const Pit &pit) const
 
 Pit Board::distributeSeeds(Pit pit, int seedCount)
 {
-    const Player player = pit.player();
+    const PlayerNumber player = pit.player();
     while (seedCount > 0)
     {
         ++pit;
@@ -30,11 +30,11 @@ Pit Board::distributeSeeds(Pit pit, int seedCount)
     return pit;
 }
 
-std::optional<Player> Board::saw(const Pit &startPit)
+std::optional<PlayerNumber> Board::saw(const Pit &startPit)
 {
     assert(!checkForGameEnd());
 
-    const Player player = startPit.player();
+    const PlayerNumber player = startPit.player();
     assert(startPit.isHouse());
     int seeds = seedCount(startPit);
     assert(seeds > 0);
@@ -56,7 +56,7 @@ std::optional<Player> Board::saw(const Pit &startPit)
 void Board::moveRemainingSeedsToStore()
 {
     assert(checkForGameEnd());
-    for (Player player : ALL_PLAYERS)
+    for (PlayerNumber player : ALL_PLAYERS)
     {
         int c = 0;
         for (Pit p = house(player, 1); p.isHouse(); ++p)
@@ -73,19 +73,19 @@ int Board::numberOfHouses() const
     return m_numberOfHouses;
 }
 
-Pit Board::pit(Player player, int pitNumber) const
+Pit Board::pit(PlayerNumber player, int pitNumber) const
 {
     assert(pitNumber >= 1 && pitNumber <= numberOfHouses() + 1);
     return {*this, player, pitNumber};
 }
 
-Pit Board::house(Player player, int houseNumber) const
+Pit Board::house(PlayerNumber player, int houseNumber) const
 {
     assert(houseNumber >= 1 && houseNumber <= numberOfHouses());
     return {*this, player, houseNumber};
 }
 
-Pit Board::store(Player player) const
+Pit Board::store(PlayerNumber player) const
 {
     return {*this, player, m_numberOfHouses + 1};
 }
@@ -110,7 +110,7 @@ void Board::clearSeedCount(const Pit &pit)
     m_seedNumbers.at(arrayIndex(pit)) = 0;
 }
 
-void Board::checkAndHandleEmptyOwnHouse(const Pit &pit, Player player)
+void Board::checkAndHandleEmptyOwnHouse(const Pit &pit, PlayerNumber player)
 {
     if (pit.isHouse() && pit.player() == player && seedCount(pit) == 1)
     {
@@ -124,7 +124,7 @@ void Board::checkAndHandleEmptyOwnHouse(const Pit &pit, Player player)
 
 bool Board::checkForGameEnd()
 {
-    for (Player player : ALL_PLAYERS)
+    for (PlayerNumber player : ALL_PLAYERS)
     {
         int c = 0;
         for (Pit p = house(player, 1); p.isHouse(); ++p)

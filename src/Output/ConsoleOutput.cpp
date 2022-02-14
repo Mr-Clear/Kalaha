@@ -23,18 +23,18 @@ void ConsoleOutput::output(const IBoard &board)
     // Houses Player One
     m_stream << "║" << filler(" ") << "│";
     for (int i = board.numberOfHouses(); i >= 1; --i)
-        m_stream << setw(m_width) << board.seedCount(board.house(Player::One, i)) << "│";
+        m_stream << setw(m_width) << board.seedCount(board.house(PlayerNumber::One, i)) << "│";
     m_stream << filler(" ") << "║" << endl;
     // Stores
-    m_stream << "║" << setw(m_width) << board.seedCount(board.store(Player::One));
+    m_stream << "║" << setw(m_width) << board.seedCount(board.store(PlayerNumber::One));
     m_stream << "├" << filler("─");
     for (int i = 2; i <= board.numberOfHouses(); ++i)
         m_stream << "┼" << filler("─");
-    m_stream << "┤" << setw(m_width) << board.seedCount(board.store(Player::Two)) << "║" << endl;
+    m_stream << "┤" << setw(m_width) << board.seedCount(board.store(PlayerNumber::Two)) << "║" << endl;
     // Houses Player Two
     m_stream << "║" << filler(" ") << "│";
     for (int i = 1; i <= board.numberOfHouses(); ++i)
-        m_stream << setw(m_width) << board.seedCount(board.house(Player::Two, i)) << "│";
+        m_stream << setw(m_width) << board.seedCount(board.house(PlayerNumber::Two, i)) << "│";
     m_stream << filler(" ") << "║" << endl;
     // Bottom Border
     m_stream << "╚" << filler("═") << "╧";
