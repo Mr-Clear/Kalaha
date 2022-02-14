@@ -17,7 +17,7 @@ public:
     MOCK_METHOD(Pit, store, (PlayerNumber player), (const, override));
     MOCK_METHOD(int, seedCount, (const Pit &pit), (const, override));
     MOCK_METHOD(std::optional<PlayerNumber>, saw, (const Pit &startPit), (override));
-    MOCK_METHOD(void, moveRemainingSeedsToStore, (), (override));
+    MOCK_METHOD(std::optional<PlayerNumber>, moveRemainingSeedsToStore, (), (override));
     MOCK_METHOD(std::optional<Turn>, lastTurn, (), (const, override));
 };
 
@@ -61,7 +61,7 @@ TEST(ConsoleOutputTest, mocked)
                                                                     {b.house(PlayerNumber::Two, 3),
                                                                      b.house(PlayerNumber::Two, 4)}}));
 
-    o.output(b);
+    o.showBoard(b);
     std::string exp = "╔═════╤═════╤═════╤═════╤═════╤═════╤═════╤═════╗\n"
                       "║     │   5 │ 135 │  66 │   5 │  20 │   0 │     ║\n"
                       "║ 363 ├─────┼─────┼─────┼─────┼─────┼─────┤ 111 ║\n"

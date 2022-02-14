@@ -13,8 +13,8 @@ class IBoard
 public:
     struct Turn
     {
-        PlayerNumber player;
-        Pit selectedPit;
+        std::optional<PlayerNumber> player;
+        std::optional<Pit> selectedPit;
         std::unordered_set<Pit> changedPits;
     };
 
@@ -27,7 +27,7 @@ public:
     virtual std::optional<PlayerNumber> saw(const Pit &startPit) = 0;
     [[nodiscard]] virtual std::optional<Turn> lastTurn() const = 0;
 
-    virtual void moveRemainingSeedsToStore() = 0;
+    virtual std::optional<PlayerNumber> moveRemainingSeedsToStore() = 0;
 };
 
 class Board : public IBoard
@@ -44,7 +44,7 @@ public:
     std::optional<PlayerNumber> saw(const Pit &startPit) override;
     [[nodiscard]] std::optional<Turn> lastTurn() const override;
 
-    void moveRemainingSeedsToStore() override;
+    std::optional<PlayerNumber> moveRemainingSeedsToStore() override;
 
 private:
     const int m_numberOfHouses;
@@ -56,7 +56,7 @@ private:
     void addSeeds(const Pit &pit, int seedNumber);
     void clearSeedCount(const Pit &pit);
     void checkAndHandleCapture(const Pit &pit, PlayerNumber player);
-    bool checkForGameEnd();
+    bool checkForGameEnd() const;
     Pit distributeSeeds(Pit pit, int seedCount);
 };
 

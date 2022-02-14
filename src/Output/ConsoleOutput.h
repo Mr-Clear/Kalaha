@@ -7,18 +7,19 @@
 
 /**
  * Output looks like:
- * ╔══╤══╤══╤══╤══╤══╤══╤══╗
- * ║  │ 4│ 4│ 4│ 4│ 4│ 4│  ║
- * ║ 0├──┼──┼──┼──┼──┼──┤ 0║
- * ║  │ 4│ 4│ 4│ 4│ 4│ 4│  ║
- * ╚══╧══╧══╧══╧══╧══╧══╧══╝
+ * ╔════╤════╤════╤════╤════╤════╤════╤════╗
+ * ║    │( 5)│( 5)│( 5)│[ 0]│  4 │  4 │    ║
+ * ║( 1)├────┼────┼────┼────┼────┼────┤  0 ║
+ * ║    │  4 │  4 │  4 │  4 │  4 │  4 │    ║
+ * ╚════╧════╧════╧════╧════╧════╧════╧════╝
  */
-
 class ConsoleOutput : public Output
 {
 public:
     ConsoleOutput(int maxCountWidth = 2, std::ostream &stream = std::cout);
-    void output(const IBoard &board) override;
+    void showBoard(const IBoard &board) override;
+    void showTurn(int number, PlayerNumber player) override;
+    void showWinner(const std::optional<PlayerNumber> &winner) override;
 
 private:
     const int m_width;

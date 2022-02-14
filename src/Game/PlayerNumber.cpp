@@ -12,3 +12,9 @@ PlayerNumber &operator++(PlayerNumber &p)
     p = !p;
     return p;
 }
+
+std::ostream &operator<<(std::ostream& os, PlayerNumber player)
+{
+    os << (player == PlayerNumber::One ? "Player One" : "Player Two");
+    return os;
+}

@@ -34,7 +34,7 @@ ConsoleOutput::ConsoleOutput(int maxCountWidth, std::ostream &stream) :
     assert(m_width >= 0);
 }
 
-void ConsoleOutput::output(const IBoard &board)
+void ConsoleOutput::showBoard(const IBoard &board)
 {
     // Top Border
     m_stream << "╔" << filler("═") << "╤";
@@ -62,6 +62,20 @@ void ConsoleOutput::output(const IBoard &board)
     for (int i = 1; i <= board.numberOfHouses(); ++i)
         m_stream << filler("═") << "╧";
     m_stream << filler("═") << "╝" << endl;
+}
+
+void ConsoleOutput::showTurn(int number, PlayerNumber player)
+{
+    m_stream << "Turn " << number << ", Player " << player << ":" << endl;
+}
+
+void ConsoleOutput::showWinner(const std::optional<PlayerNumber> &winner)
+{
+    m_stream << "Game Over!";
+    if (winner)
+        m_stream << " Winner is: " << winner.value() << endl;
+    else
+        m_stream << " It's a Draw!" << endl;
 }
 
 std::string ConsoleOutput::filler(const std::string &character)

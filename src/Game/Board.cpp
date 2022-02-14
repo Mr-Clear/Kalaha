@@ -60,9 +60,10 @@ std::optional<IBoard::Turn> Board::lastTurn() const
     return m_lastTurn;
 }
 
-void Board::moveRemainingSeedsToStore()
+std::optional<PlayerNumber> Board::moveRemainingSeedsToStore()
 {
     assert(checkForGameEnd());
+    m_lastTurn = Turn{};
     for (PlayerNumber player : ALL_PLAYERS)
     {
         int c = 0;
@@ -73,6 +74,11 @@ void Board::moveRemainingSeedsToStore()
         }
         addSeeds(store(player), c);
     }
+    if (seedCount(store(PlayerNumber::One)) > seedCount(store(PlayerNumber::Two)))
+        return PlayerNumber::One;
+    if (seedCount(store(PlayerNumber::One)) < seedCount(store(PlayerNumber::Two)))
+        return PlayerNumber::Two;
+    return {};
 }
 
 int Board::numberOfHouses() const
@@ -109,16 +115,23 @@ void Board::incrementSeedCount(const Pit &pit)
 
 void Board::addSeeds(const Pit &pit, int seedNumber)
 {
-    m_seedNumbers.at(arrayIndex(pit)) += seedNumber;
-    if (m_lastTurn)
-        m_lastTurn.value().changedPits.insert(pit);
+    assert(seedNumber >= 0);
+    if (seedNumber)
+    {
+        m_seedNumbers.at(arrayIndex(pit)) += seedNumber;
+        if (m_lastTurn)
+            m_lastTurn.value().changedPits.insert(pit);
+    }
 }
 
 void Board::clearSeedCount(const Pit &pit)
 {
-    m_seedNumbers.at(arrayIndex(pit)) = 0;
-    if (m_lastTurn)
-        m_lastTurn.value().changedPits.insert(pit);
+    if(m_seedNumbers.at(arrayIndex(pit)))
+    {
+        m_seedNumbers.at(arrayIndex(pit)) = 0;
+        if (m_lastTurn)
+            m_lastTurn.value().changedPits.insert(pit);
+    }
 }
 
 void Board::checkAndHandleCapture(const Pit &pit, PlayerNumber player)
@@ -133,7 +146,7 @@ void Board::checkAndHandleCapture(const Pit &pit, PlayerNumber player)
     }
 }
 
-bool Board::checkForGameEnd()
+bool Board::checkForGameEnd() const
 {
     for (PlayerNumber player : ALL_PLAYERS)
     {
