@@ -4,10 +4,26 @@
 
 #include <cassert>
 
+Pit::Pit(const Pit &o) = default;
+
+Pit &Pit::operator=(const Pit &o)
+{
+    assert(&m_board == &o.m_board);
+    m_player = o.m_player;
+    m_number = o.m_number;
+    m_overflow = o.m_overflow;
+    return *this;
+}
+
 bool Pit::operator==(const Pit &o) const
 {
     return m_player == o.player() &&
-           m_number == o.number();
+            m_number == o.number();
+}
+
+const IBoard &Pit::board() const
+{
+    return m_board;
 }
 
 PlayerNumber Pit::player() const

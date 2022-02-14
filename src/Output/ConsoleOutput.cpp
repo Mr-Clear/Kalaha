@@ -6,6 +6,27 @@
 
 using std::endl, std::setw;
 
+
+namespace {
+std::ostream &operator<<(std::ostream& os, const Pit& pit)
+{
+    const int width = os.width();
+    os.width(0);
+    std::string brackets = "  ";
+
+    const IBoard &board = pit.board();
+    if (board.lastTurn())
+    {
+        if (board.lastTurn().value().selectedPit == pit)
+            brackets = "[]";
+        else if(board.lastTurn().value().changedPits.contains(pit))
+            brackets = "()";
+    }
+    os << brackets[0] << setw(width) << board.seedCount(pit) << brackets[1];
+    return os;
+}
+} // namespace
+
 ConsoleOutput::ConsoleOutput(int maxCountWidth, std::ostream &stream) :
     m_width{maxCountWidth},
     m_stream{stream}
@@ -23,18 +44,18 @@ void ConsoleOutput::output(const IBoard &board)
     // Houses Player One
     m_stream << "║" << filler(" ") << "│";
     for (int i = board.numberOfHouses(); i >= 1; --i)
-        m_stream << setw(m_width) << board.seedCount(board.house(PlayerNumber::One, i)) << "│";
+        m_stream << setw(m_width) << board.house(PlayerNumber::One, i) << "│";
     m_stream << filler(" ") << "║" << endl;
     // Stores
-    m_stream << "║" << setw(m_width) << board.seedCount(board.store(PlayerNumber::One));
+    m_stream << "║" << setw(m_width) << board.store(PlayerNumber::One);
     m_stream << "├" << filler("─");
     for (int i = 2; i <= board.numberOfHouses(); ++i)
         m_stream << "┼" << filler("─");
-    m_stream << "┤" << setw(m_width) << board.seedCount(board.store(PlayerNumber::Two)) << "║" << endl;
+    m_stream << "┤" << setw(m_width) << board.store(PlayerNumber::Two) << "║" << endl;
     // Houses Player Two
     m_stream << "║" << filler(" ") << "│";
     for (int i = 1; i <= board.numberOfHouses(); ++i)
-        m_stream << setw(m_width) << board.seedCount(board.house(PlayerNumber::Two, i)) << "│";
+        m_stream << setw(m_width) << board.house(PlayerNumber::Two, i) << "│";
     m_stream << filler(" ") << "║" << endl;
     // Bottom Border
     m_stream << "╚" << filler("═") << "╧";
@@ -46,7 +67,7 @@ void ConsoleOutput::output(const IBoard &board)
 std::string ConsoleOutput::filler(const std::string &character)
 {
     std::string s;
-    for (int i = 0; i < m_width; ++i)
+    for (int i = 0; i < m_width + 2; ++i)
         s += character;
     return s;
 }

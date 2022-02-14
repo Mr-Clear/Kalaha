@@ -39,6 +39,8 @@ std::optional<PlayerNumber> Board::saw(const Pit &startPit)
     int seeds = seedCount(startPit);
     assert(seeds > 0);
 
+    m_lastTurn = Turn{player, startPit};
+
     clearSeedCount(startPit);
 
     const Pit endPit = distributeSeeds(startPit, seeds);
@@ -51,6 +53,11 @@ std::optional<PlayerNumber> Board::saw(const Pit &startPit)
     if (endPit.isPlayersStore(player))
         return player;
     return !player;
+}
+
+std::optional<IBoard::Turn> Board::lastTurn() const
+{
+    return m_lastTurn;
 }
 
 void Board::moveRemainingSeedsToStore()
@@ -97,17 +104,21 @@ int Board::arrayIndex(const Pit &pit) const
 
 void Board::incrementSeedCount(const Pit &pit)
 {
-    m_seedNumbers.at(arrayIndex(pit))++;
+    addSeeds(pit, 1);
 }
 
 void Board::addSeeds(const Pit &pit, int seedNumber)
 {
     m_seedNumbers.at(arrayIndex(pit)) += seedNumber;
+    if (m_lastTurn)
+        m_lastTurn.value().changedPits.insert(pit);
 }
 
 void Board::clearSeedCount(const Pit &pit)
 {
     m_seedNumbers.at(arrayIndex(pit)) = 0;
+    if (m_lastTurn)
+        m_lastTurn.value().changedPits.insert(pit);
 }
 
 void Board::checkAndHandleEmptyOwnHouse(const Pit &pit, PlayerNumber player)

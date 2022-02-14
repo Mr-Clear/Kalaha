@@ -6,9 +6,18 @@
 #include <optional>
 #include <vector>
 
+#include <unordered_set>
+
 class IBoard
 {
 public:
+    struct Turn
+    {
+        PlayerNumber player;
+        Pit selectedPit;
+        std::unordered_set<Pit> changedPits;
+    };
+
     [[nodiscard]] virtual int numberOfHouses() const = 0;
     [[nodiscard]] virtual Pit pit(PlayerNumber player, int pitNumber) const = 0;
     [[nodiscard]] virtual Pit house(PlayerNumber player, int houseNumber) const = 0;
@@ -16,6 +25,7 @@ public:
     [[nodiscard]] virtual int seedCount(const Pit &pit) const = 0;
 
     virtual std::optional<PlayerNumber> saw(const Pit &startPit) = 0;
+    [[nodiscard]] virtual std::optional<Turn> lastTurn() const = 0;
 
     virtual void moveRemainingSeedsToStore() = 0;
 };
@@ -32,12 +42,14 @@ public:
     [[nodiscard]] int seedCount(const Pit &pit) const override;
 
     std::optional<PlayerNumber> saw(const Pit &startPit) override;
+    [[nodiscard]] std::optional<Turn> lastTurn() const override;
 
     void moveRemainingSeedsToStore() override;
 
 private:
     const int m_numberOfHouses;
     std::vector<int> m_seedNumbers;
+    std::optional<Turn> m_lastTurn;
 
     [[nodiscard]] int arrayIndex(const Pit &pit) const;
     void incrementSeedCount(const Pit &pit);

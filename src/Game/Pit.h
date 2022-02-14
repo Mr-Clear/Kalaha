@@ -9,8 +9,11 @@ class IBoard;
 class Pit
 {
 public:
+    Pit(const Pit &o);
+    Pit &operator=(const Pit &o);
     bool operator==(const Pit &o) const;
 
+    [[nodiscard]] const IBoard &board() const;
     [[nodiscard]] PlayerNumber player() const;
     [[nodiscard]] int number() const;
 
@@ -33,4 +36,14 @@ private:
     int m_number;
     bool m_overflow = false;
 };
+
+namespace std {
+template <> struct hash<Pit>
+{
+  size_t operator()(const Pit &pit) const
+  {
+    return static_cast<int>(pit.player()) * 31337 + pit.number();
+  }
+};
+}
 
