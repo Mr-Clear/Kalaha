@@ -15,37 +15,57 @@ int Board::seedCount(const Pit &pit) const
     return m_seedNumbers.at(arrayIndex(pit));
 }
 
-Player Board::saw(const Pit &startPit)
+Pit Board::distributeSeeds(Pit pit, int seedCount)
 {
+    const Player player = pit.player();
+    while (seedCount > 0)
+    {
+        ++pit;
+        if (!pit.isPlayersStore(!player))
+        {
+            incrementSeedCount(pit);
+            --seedCount;
+        }
+    }
+    return pit;
+}
+
+std::optional<Player> Board::saw(const Pit &startPit)
+{
+    assert(!checkForGameEnd());
+
+    const Player player = startPit.player();
     assert(startPit.isHouse());
     int seeds = seedCount(startPit);
     assert(seeds > 0);
+
     clearSeedCount(startPit);
 
-    Pit pit = startPit;
-    Player player = pit.player();
-    while (seeds > 0)
-    {
-        ++pit;
-        if (pit.isHouse() || pit.player() == player)
-        {
-            incrementSeedCount(pit);
-            --seeds;
-        }
-    }
+    const Pit endPit = distributeSeeds(startPit, seeds);
 
-    if (pit.isHouse() && pit.player() == player && seedCount(pit) == 1)
-    {
-        const Pit opposite = pit.oppositeHouse();
-        const int capturedSeeds = seedCount(opposite) + 1;
-        clearSeedCount(pit);
-        clearSeedCount(opposite);
-        addSeeds(store(player), capturedSeeds);
-    }
+    checkAndHandleEmptyOwnHouse(endPit, player);
 
-    if (pit.isStore() && pit.player() == player)
+    if (checkForGameEnd())
+        return {};
+
+    if (endPit.isPlayersStore(player))
         return player;
     return !player;
+}
+
+void Board::moveRemainingSeedsToStore()
+{
+    assert(checkForGameEnd());
+    for (Player player : {Player::One, Player::Two})
+    {
+        int c = 0;
+        for (Pit p = house(player, 1); p.isHouse(); ++p)
+        {
+            c += seedCount(p);
+            clearSeedCount(p);
+        }
+        addSeeds(store(player), c);
+    }
 }
 
 int Board::numberOfHouses() const
@@ -88,4 +108,29 @@ void Board::addSeeds(const Pit &pit, int seedNumber)
 void Board::clearSeedCount(const Pit &pit)
 {
     m_seedNumbers.at(arrayIndex(pit)) = 0;
+}
+
+void Board::checkAndHandleEmptyOwnHouse(const Pit &pit, Player player)
+{
+    if (pit.isHouse() && pit.player() == player && seedCount(pit) == 1)
+    {
+        const Pit opposite = pit.oppositeHouse();
+        const int capturedSeeds = seedCount(opposite) + 1;
+        clearSeedCount(pit);
+        clearSeedCount(opposite);
+        addSeeds(store(player), capturedSeeds);
+    }
+}
+
+bool Board::checkForGameEnd()
+{
+    for (Player player : {Player::One, Player::Two})
+    {
+        int c = 0;
+        for (Pit p = house(player, 1); p.isHouse(); ++p)
+            c += seedCount(p);
+        if (!c)
+            return true;
+    }
+    return false;
 }

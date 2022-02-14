@@ -30,6 +30,11 @@ bool Pit::isStore() const
     return m_number == m_board.numberOfHouses() + 1;
 }
 
+bool Pit::isPlayersStore(Player p) const
+{
+    return isStore() && p == player();
+}
+
 Pit Pit::oppositeHouse() const
 {
     assert(isHouse());

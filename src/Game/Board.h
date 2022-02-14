@@ -3,6 +3,7 @@
 #include "Game/Pit.h"
 #include "Game/Player.h"
 
+#include <optional>
 #include <vector>
 
 class Board
@@ -16,7 +17,9 @@ public:
     [[nodiscard]] Pit store(Player player) const;
     [[nodiscard]] int seedCount(const Pit &pit) const;
 
-    Player saw(const Pit &startPit);
+    std::optional<Player> saw(const Pit &startPit);
+
+    void moveRemainingSeedsToStore();
 
 private:
     const int m_numberOfHouses;
@@ -26,5 +29,8 @@ private:
     void incrementSeedCount(const Pit &pit);
     void addSeeds(const Pit &pit, int seedNumber);
     void clearSeedCount(const Pit &pit);
+    void checkAndHandleEmptyOwnHouse(const Pit &pit, Player player);
+    bool checkForGameEnd();
+    Pit distributeSeeds(Pit pit, int seedCount);
 };
 
