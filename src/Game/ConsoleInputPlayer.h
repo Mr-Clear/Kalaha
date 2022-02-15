@@ -1,12 +1,11 @@
 #pragma once
 
 #include "Game/IPlayer.h"
-#include "Game/PlayerNumber.h"
 
-class RandomPlayer : public IPlayer
+class ConsoleInputPlayer : public IPlayer
 {
 public:
-    RandomPlayer(PlayerNumber number);
+    ConsoleInputPlayer(PlayerNumber number);
 
     [[nodiscard]] Pit selectHouse(const IBoard &board) const override;
 };

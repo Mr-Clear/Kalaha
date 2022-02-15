@@ -17,8 +17,8 @@ TEST(GameTest, mocked)
 {
     MockOutput output;
     std::unique_ptr<MockBoard> board = std::make_unique<MockBoard>();
-    std::shared_ptr<MockPlayer> playerA{std::make_shared<MockPlayer>()};
-    std::shared_ptr<MockPlayer> playerB{std::make_shared<MockPlayer>()};
+    std::shared_ptr<MockPlayer> playerA{std::make_shared<MockPlayer>(One)};
+    std::shared_ptr<MockPlayer> playerB{std::make_shared<MockPlayer>(Two)};
 
     EXPECT_CALL(output, showBoard(_)).Times(5);
     EXPECT_CALL(output, showTurn(1, One));

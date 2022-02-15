@@ -8,5 +8,9 @@
 class MockPlayer : public IPlayer
 {
 public:
+    MockPlayer(PlayerNumber number) :
+        IPlayer{number}
+    { }
+
     MOCK_METHOD(Pit, selectHouse, (const IBoard &board), (const, override));
 };
