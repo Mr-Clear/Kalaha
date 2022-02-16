@@ -12,9 +12,12 @@ ConsoleInputPlayer::ConsoleInputPlayer(PlayerNumber number) :
 
 Pit ConsoleInputPlayer::selectHouse(const IBoard &board) const
 {
-    std::set<int> options = getOptions(board);
+    const std::set<Pit> options = getOptions(board);
+    std::set<int> optionNumbers;
+    for (const Pit &p : options)
+        optionNumbers.insert(p.number());
     int selected = 0;
-    while (!options.contains(selected))
+    while (!optionNumbers.contains(selected))
     {
         std::cout << playerNumber() << ", select next house from ";
         bool needSeperator = false;

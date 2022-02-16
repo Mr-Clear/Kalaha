@@ -21,6 +21,11 @@ bool Pit::operator==(const Pit &o) const
             m_number == o.number();
 }
 
+bool Pit::operator<(const Pit &o) const
+{
+    return std::tie(m_player, m_number) < std::tie(o.m_player, o.m_number);
+}
+
 const IBoard &Pit::board() const
 {
     return m_board;
@@ -75,8 +80,27 @@ Pit &Pit::operator++()
     return *this;
 }
 
+Pit &Pit::operator--()
+{
+    m_number--;
+    if (m_number < 1)
+    {
+        m_number = m_board.numberOfHouses() + 1;
+        ++m_player;
+    }
+    return *this;
+}
+
 Pit::Pit(const IBoard &board, PlayerNumber player, int number) :
     m_board{board},
     m_player{player},
     m_number{number}
 { }
+
+std::ostream& operator<<(std::ostream& os, const Pit& pit)
+{
+    if (pit.isHouse())
+        return os << "House(" << pit.player() << ", " << pit.number() << ")";
+    else
+        return os << "Store(" << pit.player() << ")";
+}

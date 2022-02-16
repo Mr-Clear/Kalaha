@@ -11,6 +11,6 @@ RandomPlayer::RandomPlayer(PlayerNumber number) :
 
 Pit RandomPlayer::selectHouse(const IBoard &board) const
 {
-    const std::set<int> options = getOptions(board);
-    return board.house(playerNumber(), *Tools::selectRandomItem(options.cbegin(), options.cend()));
+    const std::set<Pit> options = getOptions(board);
+    return *Tools::selectRandomItem(options.cbegin(), options.cend());
 }

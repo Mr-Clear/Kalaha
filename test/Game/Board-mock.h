@@ -16,3 +16,5 @@ public:
     MOCK_METHOD(std::optional<PlayerNumber>, moveRemainingSeedsToStore, (), (override));
     MOCK_METHOD(std::optional<Turn>, lastTurn, (), (const, override));
 };
+
+void prepareMockBoard(MockBoard &board, int numberOfHouses,  const std::initializer_list<int> &seedsPerPit);

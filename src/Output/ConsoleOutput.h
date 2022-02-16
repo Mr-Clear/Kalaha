@@ -25,6 +25,5 @@ private:
     const int m_width;
     std::ostream &m_stream;
 
-    std::string filler(const std::string &character);
     std::string printPit(const Pit &pit);
 };

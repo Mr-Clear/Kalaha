@@ -9,9 +9,11 @@ class IBoard;
 class Pit
 {
 public:
+    Pit(const IBoard &board, PlayerNumber player, int number);
     Pit(const Pit &o);
     Pit &operator=(const Pit &o);
     bool operator==(const Pit &o) const;
+    bool operator<(const Pit &o) const;
 
     [[nodiscard]] const IBoard &board() const;
     [[nodiscard]] PlayerNumber player() const;
@@ -25,13 +27,9 @@ public:
     [[nodiscard]] bool isOverflow() const;
 
     Pit &operator++();
+    Pit &operator--();
 
 private:
-    friend class Board;
-    FRIEND_TEST(ConsoleOutputTest, mocked);
-    FRIEND_TEST(GameTest, mocked);
-
-    Pit(const IBoard &board, PlayerNumber player, int number);
 
     const IBoard &m_board;
     PlayerNumber m_player;
@@ -49,3 +47,4 @@ template <> struct hash<Pit>
 };
 }
 
+std::ostream& operator<<(std::ostream& os, const Pit& pit);

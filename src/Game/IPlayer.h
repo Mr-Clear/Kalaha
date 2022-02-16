@@ -17,7 +17,7 @@ public:
     [[nodiscard]] virtual Pit selectHouse(const IBoard &board) const = 0;
 
 protected:
-    [[nodiscard]] std::set<int> getOptions(const IBoard &board) const;
+    [[nodiscard]] std::set<Pit> getOptions(const IBoard &board) const;
 
 private:
     PlayerNumber m_number;

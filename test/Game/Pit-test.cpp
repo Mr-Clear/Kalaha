@@ -65,3 +65,32 @@ TEST(PitTest, incrementOperator)
     ++a;
     EXPECT_EQ(a, b.house(One, 2));
 }
+
+TEST(PitTest, decrementOperator)
+{
+    Board b{3, 2};
+    Pit a = b.house(One, 1);
+    EXPECT_EQ(a, b.house(One, 1));
+    --a;
+    EXPECT_EQ(a, b.store(Two));
+    --a;
+    EXPECT_EQ(a, b.house(Two, 3));
+    --a;
+    EXPECT_EQ(a, b.house(Two, 2));
+    --a;
+    EXPECT_EQ(a, b.house(Two, 1));
+    --a;
+    EXPECT_EQ(a, b.store(One));
+    --a;
+    EXPECT_EQ(a, b.house(One, 3));
+    --a;
+    EXPECT_EQ(a, b.house(One, 2));
+    --a;
+    EXPECT_EQ(a, b.house(One, 1));
+    --a;
+    EXPECT_EQ(a, b.store(Two));
+    --a;
+    EXPECT_EQ(a, b.house(Two, 3));
+    --a;
+    EXPECT_EQ(a, b.house(Two, 2));
+}

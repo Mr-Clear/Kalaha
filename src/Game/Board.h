@@ -29,12 +29,15 @@ public:
     virtual std::optional<PlayerNumber> saw(const Pit &startPit) = 0;
     [[nodiscard]] virtual std::optional<Turn> lastTurn() const = 0;
     virtual std::optional<PlayerNumber> moveRemainingSeedsToStore() = 0;
+
+    void print(std::ostream &stream, int intWidth = 2) const;
 };
 
 class Board : public IBoard
 {
 public:
     Board(int numberOfHouses, int startSeedsPerHouse);
+    Board(const IBoard &o);
 
     [[nodiscard]] int numberOfHouses() const override;
     [[nodiscard]] Pit pit(PlayerNumber player, int pitNumber) const override;

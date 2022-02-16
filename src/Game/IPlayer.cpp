@@ -13,12 +13,15 @@ PlayerNumber IPlayer::playerNumber() const
     return m_number;
 }
 
-std::set<int> IPlayer::getOptions(const IBoard &board) const
+std::set<Pit> IPlayer::getOptions(const IBoard &board) const
 {
-    std::set<int> options;
+    std::set<Pit> options;
     for (int i = 1; i <= board.numberOfHouses(); ++i)
-        if (board.seedCount(board.house(m_number, i)))
-    options.insert(i);
+    {
+        const Pit p = board.house(m_number, i);
+        if (board.seedCount(p))
+            options.insert(p);
+    }
     assert(!options.empty());
     return options;
 }
