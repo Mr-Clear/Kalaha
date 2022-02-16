@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Output/IOutput.h"
+#include "Output/AbstractOutput.h"
 
 #include <iostream>
 #include <string>
@@ -13,11 +13,11 @@
  * ║    │  4 │  4 │  4 │  4 │  4 │  4 │    ║
  * ╚════╧════╧════╧════╧════╧════╧════╧════╝
  */
-class ConsoleOutput : public IOutput
+class ConsoleOutput : public AbstractOutput
 {
 public:
     ConsoleOutput(int maxCountWidth = 2, std::ostream &stream = std::cout);
-    void showBoard(const IBoard &board) override;
+    void showBoard(const AbstractBoard &board) override;
     void showTurn(int number, PlayerNumber player) override;
     void showWinner(const std::optional<PlayerNumber> &winner) override;
 

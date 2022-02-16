@@ -6,10 +6,10 @@
 #include <cassert>
 
 RandomPlayer::RandomPlayer(PlayerNumber number) :
-    IPlayer{number}
+    AbstractPlayer{number}
 { }
 
-Pit RandomPlayer::selectHouse(const IBoard &board) const
+Pit RandomPlayer::selectHouse(const AbstractBoard &board) const
 {
     const std::set<Pit> options = getOptions(board);
     return *Tools::selectRandomItem(options.cbegin(), options.cend());

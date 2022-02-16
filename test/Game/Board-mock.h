@@ -4,9 +4,11 @@
 
 #include <gmock/gmock.h>
 
-class MockBoard : public IBoard
+class MockBoard : public AbstractBoard
 {
 public:
+    MockBoard(int numberOfHouses,  const std::initializer_list<int> &seedsPerPit);
+
     MOCK_METHOD(int, numberOfHouses, (), (const, override));
     MOCK_METHOD(Pit, pit, (PlayerNumber player, int pitNumber), (const, override));
     MOCK_METHOD(Pit, house, (PlayerNumber player, int houseNumber), (const, override));
@@ -16,5 +18,3 @@ public:
     MOCK_METHOD(std::optional<PlayerNumber>, moveRemainingSeedsToStore, (), (override));
     MOCK_METHOD(std::optional<Turn>, lastTurn, (), (const, override));
 };
-
-void prepareMockBoard(MockBoard &board, int numberOfHouses,  const std::initializer_list<int> &seedsPerPit);

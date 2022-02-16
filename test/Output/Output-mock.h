@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Output/IOutput.h"
+#include "Output/AbstractOutput.h"
 
 #include <gmock/gmock.h>
 
-class MockOutput : public IOutput
+class MockOutput : public AbstractOutput
 {
 public:
     MOCK_METHOD(void, showTurn, (int number, PlayerNumber player), (override));
-    MOCK_METHOD(void, showBoard, (const IBoard &board), (override));
+    MOCK_METHOD(void, showBoard, (const AbstractBoard &board), (override));
     MOCK_METHOD(void, showWinner, (const std::optional<PlayerNumber> &winner), (override));
 };

@@ -26,7 +26,7 @@ bool Pit::operator<(const Pit &o) const
     return std::tie(m_player, m_number) < std::tie(o.m_player, o.m_number);
 }
 
-const IBoard &Pit::board() const
+const AbstractBoard &Pit::board() const
 {
     return m_board;
 }
@@ -91,7 +91,7 @@ Pit &Pit::operator--()
     return *this;
 }
 
-Pit::Pit(const IBoard &board, PlayerNumber player, int number) :
+Pit::Pit(const AbstractBoard &board, PlayerNumber player, int number) :
     m_board{board},
     m_player{player},
     m_number{number}

@@ -1,19 +1,19 @@
-#include "IPlayer.h"
+#include "AbstractPlayer.h"
 
 #include "Game/Board.h"
 
 #include <cassert>
 
-IPlayer::IPlayer(PlayerNumber number) :
+AbstractPlayer::AbstractPlayer(PlayerNumber number) :
     m_number{number}
 { }
 
-PlayerNumber IPlayer::playerNumber() const
+PlayerNumber AbstractPlayer::playerNumber() const
 {
     return m_number;
 }
 
-std::set<Pit> IPlayer::getOptions(const IBoard &board) const
+std::set<Pit> AbstractPlayer::getOptions(const AbstractBoard &board) const
 {
     std::set<Pit> options;
     for (int i = 1; i <= board.numberOfHouses(); ++i)

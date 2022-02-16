@@ -1,16 +1,16 @@
 #include "ConsoleInputPlayer.h"
 
-#include "Board.h"
-#include "Pit.h"
+#include "Game/Board.h"
+#include "Game/Pit.h"
 
 #include <iterator>
 #include <sstream>
 
 ConsoleInputPlayer::ConsoleInputPlayer(PlayerNumber number) :
-    IPlayer{number}
+    AbstractPlayer{number}
 { }
 
-Pit ConsoleInputPlayer::selectHouse(const IBoard &board) const
+Pit ConsoleInputPlayer::selectHouse(const AbstractBoard &board) const
 {
     const std::set<Pit> options = getOptions(board);
     std::set<int> optionNumbers;

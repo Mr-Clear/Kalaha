@@ -2,10 +2,10 @@
 
 #include "Game/Board.h"
 
-SmartPlayer::SmartPlayer(PlayerNumber playerNumber) : IPlayer(playerNumber)
+SmartPlayer::SmartPlayer(PlayerNumber playerNumber) : AbstractPlayer(playerNumber)
 { }
 
-Pit SmartPlayer::selectHouse(const IBoard &board) const
+Pit SmartPlayer::selectHouse(const AbstractBoard &board) const
 {
     std::vector<int> storeSeeds;
     for (const Pit &p : getOptions(board))

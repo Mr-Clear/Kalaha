@@ -11,7 +11,7 @@ ConsoleOutput::ConsoleOutput(int maxCountWidth, std::ostream &stream) :
     assert(m_width >= 0);
 }
 
-void ConsoleOutput::showBoard(const IBoard &board)
+void ConsoleOutput::showBoard(const AbstractBoard &board)
 {
     board.print(m_stream, m_width);
 }

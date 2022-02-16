@@ -1,43 +1,16 @@
 #pragma once
 
+#include "Game/AbstractBoard.h"
 #include "Game/Pit.h"
-#include "Game/PlayerNumber.h"
 
 #include <gtest/gtest_prod.h>
-#include <optional>
-#include <unordered_set>
 #include <vector>
 
-class IBoard
-{
-public:
-    struct Turn
-    {
-        std::optional<PlayerNumber> player;
-        std::optional<Pit> selectedPit;
-        std::unordered_set<Pit> changedPits;
-    };
-
-    virtual ~IBoard() = default;
-
-    [[nodiscard]] virtual int numberOfHouses() const = 0;
-    [[nodiscard]] virtual Pit pit(PlayerNumber player, int pitNumber) const = 0;
-    [[nodiscard]] virtual Pit house(PlayerNumber player, int houseNumber) const = 0;
-    [[nodiscard]] virtual Pit store(PlayerNumber player) const = 0;
-    [[nodiscard]] virtual int seedCount(const Pit &pit) const = 0;
-
-    virtual std::optional<PlayerNumber> saw(const Pit &startPit) = 0;
-    [[nodiscard]] virtual std::optional<Turn> lastTurn() const = 0;
-    virtual std::optional<PlayerNumber> moveRemainingSeedsToStore() = 0;
-
-    void print(std::ostream &stream, int intWidth = 2) const;
-};
-
-class Board : public IBoard
+class Board : public AbstractBoard
 {
 public:
     Board(int numberOfHouses, int startSeedsPerHouse);
-    Board(const IBoard &o);
+    Board(const AbstractBoard &o);
 
     [[nodiscard]] int numberOfHouses() const override;
     [[nodiscard]] Pit pit(PlayerNumber player, int pitNumber) const override;

@@ -4,18 +4,18 @@
 
 #include <gtest/gtest_prod.h>
 
-class IBoard;
+class AbstractBoard;
 
 class Pit
 {
 public:
-    Pit(const IBoard &board, PlayerNumber player, int number);
+    Pit(const AbstractBoard &board, PlayerNumber player, int number);
     Pit(const Pit &o);
     Pit &operator=(const Pit &o);
     bool operator==(const Pit &o) const;
     bool operator<(const Pit &o) const;
 
-    [[nodiscard]] const IBoard &board() const;
+    [[nodiscard]] const AbstractBoard &board() const;
     [[nodiscard]] PlayerNumber player() const;
     [[nodiscard]] int number() const;
 
@@ -31,7 +31,7 @@ public:
 
 private:
 
-    const IBoard &m_board;
+    const AbstractBoard &m_board;
     PlayerNumber m_player;
     int m_number;
     bool m_overflow = false;

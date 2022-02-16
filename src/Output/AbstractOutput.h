@@ -2,13 +2,13 @@
 
 #include "Game/Board.h"
 
-class IOutput
+class AbstractOutput
 {
 public:
-    virtual ~IOutput() = default;
+    virtual ~AbstractOutput() = default;
 
     virtual void showTurn(int number, PlayerNumber player) = 0;
-    virtual void showBoard(const IBoard &board) = 0;
+    virtual void showBoard(const AbstractBoard &board) = 0;
     virtual void showWinner(const std::optional<PlayerNumber> &winner) = 0;
 };
 
