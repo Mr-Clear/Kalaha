@@ -2,15 +2,15 @@
 
 #include <cassert>
 
-Board::Board(int numberOfHouses, int startSeedsPerHouse) :
-    m_numberOfHouses{numberOfHouses}
+Board::Board(const Rules &rules) :
+    m_numberOfHouses{rules.numberOfHouses}
 {
     for (Pit pit = this->pit(PlayerNumber::One, 1); !pit.isOverflow(); ++pit)
-        m_seedNumbers.emplace_back(static_cast<int>(pit.isHouse()) * startSeedsPerHouse);
+        m_seedNumbers.emplace_back(static_cast<int>(pit.isHouse()) * rules.startSeedsPerHouse);
 }
 
 Board::Board(const AbstractBoard &o) :
-    Board(o.numberOfHouses(), 0)
+    Board(Rules{o.numberOfHouses(), 0})
 {
     m_seedNumbers.clear();
     for (Pit pit = this->pit(PlayerNumber::One, 1); !pit.isOverflow(); ++pit)

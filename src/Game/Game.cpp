@@ -5,7 +5,7 @@
 #include <cassert>
 
 Game::Game(int numberOfHouses, int startSeedsPerHouse, AbstractOutput &output, std::map<PlayerNumber, std::shared_ptr<AbstractPlayer>> &players) :
-    Game(std::make_unique<Board>(numberOfHouses, startSeedsPerHouse), output, players)
+    Game(std::make_unique<Board>(Rules{numberOfHouses, startSeedsPerHouse}), output, players)
 { }
 
 Game::Game(std::unique_ptr<AbstractBoard> board, AbstractOutput &output, std::map<PlayerNumber, std::shared_ptr<AbstractPlayer> > &players) :

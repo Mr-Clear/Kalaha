@@ -2,6 +2,7 @@
 
 #include "Game/AbstractBoard.h"
 #include "Game/Pit.h"
+#include "Game/Rules.h"
 
 #include <gtest/gtest_prod.h>
 #include <vector>
@@ -9,7 +10,7 @@
 class Board : public AbstractBoard
 {
 public:
-    Board(int numberOfHouses, int startSeedsPerHouse);
+    explicit Board(const Rules &rules);
     Board(const AbstractBoard &o);
 
     [[nodiscard]] int numberOfHouses() const override;

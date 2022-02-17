@@ -7,7 +7,7 @@ using PlayerNumber::Two;
 
 TEST(PitTest, isHouse)
 {
-    Board b{7, 2};
+    Board b{Rules{7, 2}};
     EXPECT_EQ(true, b.pit(One, 1).isHouse());
     EXPECT_EQ(true, b.pit(One, 7).isHouse());
     EXPECT_EQ(false, b.pit(One, 8).isHouse());
@@ -21,7 +21,7 @@ TEST(PitTest, isHouse)
 
 TEST(PitTest, isStore)
 {
-    Board b{5, 2};
+    Board b{Rules{5, 2}};
     EXPECT_EQ(false, b.pit(One, 1).isStore());
     EXPECT_EQ(false, b.pit(One, 5).isStore());
     EXPECT_EQ(true, b.pit(One, 6).isStore());
@@ -35,7 +35,7 @@ TEST(PitTest, isStore)
 
 TEST(PitTest, oppositeHouse)
 {
-    Board b{7, 6};
+    Board b{Rules{7, 6}};
     EXPECT_EQ(b.house(One, 1), b.house(Two, 7).oppositeHouse());
     EXPECT_EQ(b.house(One, 7), b.house(Two, 1).oppositeHouse());
     EXPECT_EQ(b.house(One, 4), b.house(Two, 4).oppositeHouse());
@@ -43,7 +43,7 @@ TEST(PitTest, oppositeHouse)
 
 TEST(PitTest, incrementOperator)
 {
-    Board b{3, 2};
+    Board b{Rules{3, 2}};
     Pit a = b.house(One, 1);
     EXPECT_EQ(a, b.house(One, 1));
     ++a;
@@ -68,7 +68,7 @@ TEST(PitTest, incrementOperator)
 
 TEST(PitTest, decrementOperator)
 {
-    Board b{3, 2};
+    Board b{Rules{3, 2}};
     Pit a = b.house(One, 1);
     EXPECT_EQ(a, b.house(One, 1));
     --a;

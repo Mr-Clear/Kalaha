@@ -21,7 +21,7 @@ void verifySeeds(const Board &board, const std::vector<int> &seeds)
 TEST(BoardTest, constructor)
 {
     {
-        Board b{6, 11};
+        Board b{Rules{6, 11}};
         EXPECT_EQ(b.seedCount(b.pit(One, 1)), 11);
         EXPECT_EQ(b.seedCount(b.pit(One, 2)), 11);
         EXPECT_EQ(b.seedCount(b.pit(One, 3)), 11);
@@ -44,7 +44,7 @@ TEST(BoardTest, constructor)
 
 TEST(BoardTest, getPitDeath)
 {
-    Board b{5, 1};
+    Board b{Rules{5, 1}};
     EXPECT_DEATH(Pit p = b.pit(One, 0), "");
     EXPECT_DEATH(Pit p = b.pit(One, 7), "");
     EXPECT_DEATH(Pit p = b.pit(One, -1), "");
@@ -120,7 +120,7 @@ TEST(BoardTest, moveRemainingSeedsToStore)
 
 TEST(BoardTest, shortMatch)
 {
-    Board b{3, 4};
+    Board b{Rules{3, 4}};
     verifySeeds(b, {4, 4, 4, 0, 4, 4, 4, 0});
     std::optional<PlayerNumber> p;
 

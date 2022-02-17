@@ -14,5 +14,5 @@ public:
 
     MOCK_METHOD(Pit, selectHouse, (const AbstractBoard &board), (const, override));
 
-    void defineSequence(const std::initializer_list<int> &sequence, AbstractBoard &board);
+    void defineSequence(const std::initializer_list<int> &sequence, const AbstractBoard &board);
 };

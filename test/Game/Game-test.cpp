@@ -2,7 +2,7 @@
 
 #include "../test/Game/Board-mock.h"
 #include "../test/Output/Output-mock.h"
-#include "../test/Player/Player-Mock.h"
+#include "../test/Player/Player-mock.h"
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
