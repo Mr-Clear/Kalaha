@@ -14,14 +14,36 @@ public:
     Board(const AbstractBoard &o);
 
     [[nodiscard]] int numberOfHouses() const override;
-    [[nodiscard]] Pit pit(PlayerNumber player, int pitNumber) const override;
-    [[nodiscard]] Pit house(PlayerNumber player, int houseNumber) const override;
-    [[nodiscard]] Pit store(PlayerNumber player) const override;
+    [[nodiscard]] int storeId() const override;
     [[nodiscard]] int seedCount(const Pit &pit) const override;
+
+    bool isHouse(const Pit &pit) const;
+    bool isStore(const Pit &pit) const;
+    bool isPlayersStore(const Pit &pit, PlayerNumber player) const;
+    Pit oppositeHouse(const Pit &pit) const;
+
+    Pit nextPit(const Pit &pit) const;
+    Pit previousPit(const Pit &pit) const;
 
     std::optional<PlayerNumber> saw(const Pit &startPit) override;
     [[nodiscard]] std::optional<Turn> lastTurn() const override;
     std::optional<PlayerNumber> moveRemainingSeedsToStore() override;
+
+    class Iterator
+    {
+    public:
+        Iterator(int numberOfHouses, const Pit &currentPit, bool end);
+        friend auto operator<=>(const Iterator&, const Iterator&) = default;
+        Iterator& operator++();
+        const Pit &operator *() const;
+
+    private:
+        int m_numberOfHouses;
+        Pit m_currentPit;
+        bool m_end;
+    };
+    Iterator begin() const;
+    Iterator end() const;
 
 private:
     const int m_numberOfHouses;

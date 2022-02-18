@@ -18,9 +18,8 @@ TEST(ConsoleOutputTest, mocked)
     ConsoleOutput o{3, stream};
     MockBoard b{6, {0, 20, 5, 66, 135, 5, 363, 0, 0, 1, 1, 2, 2, 111}};
 
-    EXPECT_CALL(b, lastTurn())   .WillRepeatedly(Return(Board::Turn{One, b.house(Two, 2),
-                                                                    {b.house(Two, 3),
-                                                                     b.house(Two, 4)}}));
+    EXPECT_CALL(b, lastTurn())   .WillRepeatedly(Return(Board::Turn{One, Pit(Two, 2),
+                                                                    {Pit(Two, 3), Pit(Two, 4)}}));
 
     o.showBoard(b);
     std::string exp = "╔═════╤═════╤═════╤═════╤═════╤═════╤═════╤═════╗\n"

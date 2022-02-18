@@ -12,8 +12,8 @@ Pit SmartPlayer::selectHouse(const AbstractBoard &board) const
     {
         Board copy{board};
         copy.saw(p);
-        storeSeeds.emplace_back(copy.seedCount(copy.store(playerNumber())));
+        storeSeeds.emplace_back(copy.seedCount({playerNumber(), copy.numberOfHouses() + 1}));
     }
     const int maxIndex = std::max_element(storeSeeds.begin(), storeSeeds.end()) - storeSeeds.begin() + 1;
-    return board.house(playerNumber(), maxIndex);
+    return {playerNumber(), maxIndex};
 }

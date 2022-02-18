@@ -18,7 +18,7 @@ std::set<Pit> AbstractPlayer::getOptions(const AbstractBoard &board) const
     std::set<Pit> options;
     for (int i = 1; i <= board.numberOfHouses(); ++i)
     {
-        const Pit p = board.house(m_number, i);
+        const Pit p{m_number, i};
         if (board.seedCount(p))
             options.insert(p);
     }

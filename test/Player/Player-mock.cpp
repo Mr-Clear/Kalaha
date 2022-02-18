@@ -6,5 +6,5 @@ void MockPlayer::defineSequence(const std::initializer_list<int> &sequence, cons
 {
     auto &a = EXPECT_CALL(*this, selectHouse);
     for (int i : sequence)
-        a.WillOnce(::testing::Return(board.house(playerNumber(), i)));
+        a.WillOnce(::testing::Return(Pit{playerNumber(), i}));
 }

@@ -4,31 +4,11 @@
 
 #include <cassert>
 
-Pit::Pit(const Pit &o) = default;
-
-Pit &Pit::operator=(const Pit &o)
+Pit::Pit(PlayerNumber player, int number) :
+    m_player{player},
+    m_number{number}
 {
-    assert(&m_board == &o.m_board);
-    m_player = o.m_player;
-    m_number = o.m_number;
-    m_overflow = o.m_overflow;
-    return *this;
-}
-
-bool Pit::operator==(const Pit &o) const
-{
-    return m_player == o.player() &&
-            m_number == o.number();
-}
-
-bool Pit::operator<(const Pit &o) const
-{
-    return std::tie(m_player, m_number) < std::tie(o.m_player, o.m_number);
-}
-
-const AbstractBoard &Pit::board() const
-{
-    return m_board;
+    assert(number > 0);
 }
 
 PlayerNumber Pit::player() const
@@ -41,66 +21,12 @@ int Pit::number() const
     return m_number;
 }
 
-bool Pit::isHouse() const
+std::size_t std::hash<Pit>::operator()(const Pit &pit) const
 {
-    return m_number <= m_board.numberOfHouses();
+    return static_cast<int>(pit.player()) * 31337 + pit.number();
 }
-
-bool Pit::isStore() const
-{
-    return m_number == m_board.numberOfHouses() + 1;
-}
-
-bool Pit::isPlayersStore(PlayerNumber p) const
-{
-    return isStore() && p == player();
-}
-
-Pit Pit::oppositeHouse() const
-{
-    assert(isHouse());
-    return m_board.house(!m_player, m_board.numberOfHouses() - m_number + 1);
-}
-
-bool Pit::isOverflow() const
-{
-    return m_overflow;
-}
-
-Pit &Pit::operator++()
-{
-    m_number++;
-    if (m_number > m_board.numberOfHouses() + 1)
-    {
-        m_number = 1;
-        ++m_player;
-        if (m_player == PlayerNumber::One)
-            m_overflow = true;
-    }
-    return *this;
-}
-
-Pit &Pit::operator--()
-{
-    m_number--;
-    if (m_number < 1)
-    {
-        m_number = m_board.numberOfHouses() + 1;
-        ++m_player;
-    }
-    return *this;
-}
-
-Pit::Pit(const AbstractBoard &board, PlayerNumber player, int number) :
-    m_board{board},
-    m_player{player},
-    m_number{number}
-{ }
 
 std::ostream& operator<<(std::ostream& os, const Pit& pit)
 {
-    if (pit.isHouse())
-        return os << "House(" << pit.player() << ", " << pit.number() << ")";
-    else
-        return os << "Store(" << pit.player() << ")";
+    return os << "Pit(" << pit.player() << ", " << pit.number() << ")";
 }

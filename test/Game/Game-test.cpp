@@ -29,9 +29,9 @@ TEST(GameTest, mocked)
     EXPECT_CALL(output, showTurn(3, One));
     EXPECT_CALL(output, showWinner(std::optional<PlayerNumber>(Two)));
 
-    EXPECT_CALL(*board, saw(board->house(One, 1))).WillOnce(Return(Two));
-    EXPECT_CALL(*board, saw(board->house(Two, 1))).WillOnce(Return(One));
-    EXPECT_CALL(*board, saw(board->house(One, 2))).WillOnce(Return(std::nullopt));
+    EXPECT_CALL(*board, saw(Pit(One, 1))).WillOnce(Return(Two));
+    EXPECT_CALL(*board, saw(Pit(Two, 1))).WillOnce(Return(One));
+    EXPECT_CALL(*board, saw(Pit(One, 2))).WillOnce(Return(std::nullopt));
     EXPECT_CALL(*board, moveRemainingSeedsToStore).WillOnce(Return(Two));
 
     {

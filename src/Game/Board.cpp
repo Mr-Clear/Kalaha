@@ -5,15 +5,17 @@
 Board::Board(const Rules &rules) :
     m_numberOfHouses{rules.numberOfHouses}
 {
-    for (Pit pit = this->pit(PlayerNumber::One, 1); !pit.isOverflow(); ++pit)
-        m_seedNumbers.emplace_back(static_cast<int>(pit.isHouse()) * rules.startSeedsPerHouse);
+    for (const Pit &pit : *this)
+    {
+        m_seedNumbers.emplace_back(static_cast<int>(isHouse(pit)) * rules.startSeedsPerHouse);
+    }
 }
 
 Board::Board(const AbstractBoard &o) :
     Board(Rules{o.numberOfHouses(), 0})
 {
     m_seedNumbers.clear();
-    for (Pit pit = this->pit(PlayerNumber::One, 1); !pit.isOverflow(); ++pit)
+    for (const Pit &pit : *this)
         m_seedNumbers.emplace_back(o.seedCount(pit));
 }
 
@@ -22,13 +24,58 @@ int Board::seedCount(const Pit &pit) const
     return m_seedNumbers.at(arrayIndex(pit));
 }
 
+bool Board::isHouse(const Pit &pit) const
+{
+    return pit.number() <= numberOfHouses();
+}
+
+bool Board::isStore(const Pit &pit) const
+{
+    return pit.number() == numberOfHouses() + 1;
+}
+
+bool Board::isPlayersStore(const Pit &pit, PlayerNumber player) const
+{
+    return isStore(pit) && player == pit.player();
+}
+
+Pit Board::oppositeHouse(const Pit &pit) const
+{
+    assert(isHouse(pit));
+    return {!pit.player(), numberOfHouses() - pit.number() + 1};
+}
+
+Pit Board::nextPit(const Pit &pit) const
+{
+    int nr = pit.number() + 1;
+    PlayerNumber p = pit.player();
+    if (nr > m_numberOfHouses + 1)
+    {
+        nr = 1;
+        ++p;
+    }
+    return {p, nr};
+}
+
+Pit Board::previousPit(const Pit &pit) const
+{
+    int nr = pit.number() - 1;
+    PlayerNumber p = pit.player();
+    if (nr < 1)
+    {
+        nr = numberOfHouses() + 1;
+        ++p;
+    }
+    return {p, nr};
+}
+
 Pit Board::distributeSeeds(Pit pit, int seedCount)
 {
     const PlayerNumber player = pit.player();
     while (seedCount > 0)
     {
-        ++pit;
-        if (!pit.isPlayersStore(!player))
+        pit = nextPit(pit);
+        if (!isPlayersStore(pit, !player))
         {
             incrementSeedCount(pit);
             --seedCount;
@@ -42,7 +89,7 @@ std::optional<PlayerNumber> Board::saw(const Pit &startPit)
     assert(!checkForGameEnd());
 
     const PlayerNumber player = startPit.player();
-    assert(startPit.isHouse());
+    assert(isHouse(startPit));
     int seeds = seedCount(startPit);
     assert(seeds > 0);
 
@@ -57,7 +104,7 @@ std::optional<PlayerNumber> Board::saw(const Pit &startPit)
     if (checkForGameEnd())
         return {};
 
-    if (endPit.isPlayersStore(player))
+    if (isPlayersStore(endPit, player))
         return player;
     return !player;
 }
@@ -74,18 +121,29 @@ std::optional<PlayerNumber> Board::moveRemainingSeedsToStore()
     for (PlayerNumber player : ALL_PLAYERS)
     {
         int c = 0;
-        for (Pit p = house(player, 1); p.isHouse(); ++p)
+        for (Pit p{player, 1}; isHouse(p); p = nextPit(p))
         {
             c += seedCount(p);
             clearSeedCount(p);
         }
-        addSeeds(store(player), c);
+        addSeeds({player, numberOfHouses() + 1}, c);
     }
-    if (seedCount(store(PlayerNumber::One)) > seedCount(store(PlayerNumber::Two)))
+    const auto result = seedCount({PlayerNumber::One, numberOfHouses() + 1}) <=> seedCount({PlayerNumber::Two, numberOfHouses() + 1});
+    if (result > nullptr)
         return PlayerNumber::One;
-    if (seedCount(store(PlayerNumber::One)) < seedCount(store(PlayerNumber::Two)))
+    if (result < nullptr)
         return PlayerNumber::Two;
     return {};
+}
+
+Board::Iterator Board::begin() const
+{
+    return Iterator{numberOfHouses(), Pit{PlayerNumber::One, 1}, false};
+}
+
+Board::Iterator Board::end() const
+{
+    return Iterator{numberOfHouses(), Pit{PlayerNumber::Two, numberOfHouses() + 1}, true};
 }
 
 Board::Board(const std::vector<int> &seedNumbers) :
@@ -100,21 +158,9 @@ int Board::numberOfHouses() const
     return m_numberOfHouses;
 }
 
-Pit Board::pit(PlayerNumber player, int pitNumber) const
+int Board::storeId() const
 {
-    assert(pitNumber >= 1 && pitNumber <= numberOfHouses() + 1);
-    return {*this, player, pitNumber};
-}
-
-Pit Board::house(PlayerNumber player, int houseNumber) const
-{
-    assert(houseNumber >= 1 && houseNumber <= numberOfHouses());
-    return {*this, player, houseNumber};
-}
-
-Pit Board::store(PlayerNumber player) const
-{
-    return {*this, player, m_numberOfHouses + 1};
+    return numberOfHouses() + 1;
 }
 
 int Board::arrayIndex(const Pit &pit) const
@@ -150,13 +196,13 @@ void Board::clearSeedCount(const Pit &pit)
 
 void Board::checkAndHandleCapture(const Pit &pit, PlayerNumber player)
 {
-    if (pit.isHouse() && pit.player() == player && seedCount(pit) == 1 && seedCount(pit.oppositeHouse()))
+    if (isHouse(pit) && pit.player() == player && seedCount(pit) == 1 && seedCount(oppositeHouse(pit)))
     {
-        const Pit opposite = pit.oppositeHouse();
+        const Pit opposite = oppositeHouse(pit);
         const int capturedSeeds = seedCount(opposite) + 1;
         clearSeedCount(pit);
         clearSeedCount(opposite);
-        addSeeds(store(player), capturedSeeds);
+        addSeeds({player, numberOfHouses() + 1}, capturedSeeds);
     }
 }
 
@@ -165,10 +211,42 @@ bool Board::checkForGameEnd() const
     for (PlayerNumber player : ALL_PLAYERS)
     {
         int c = 0;
-        for (Pit p = house(player, 1); p.isHouse(); ++p)
+        for (Pit p{player, 1}; isHouse(p); p = nextPit(p))
             c += seedCount(p);
         if (!c)
             return true;
     }
     return false;
+}
+
+Board::Iterator::Iterator(int numberOfHouses, const Pit &currentPit, bool end) :
+    m_numberOfHouses{numberOfHouses},
+    m_currentPit{currentPit},
+    m_end{end}
+{ }
+
+Board::Iterator &Board::Iterator::operator++()
+{
+    if (m_currentPit == Pit{PlayerNumber::Two, m_numberOfHouses + 1})
+    {
+        m_end = true;
+    }
+    else
+    {
+        int nr = m_currentPit.number() + 1;
+        PlayerNumber p = m_currentPit.player();
+        if (nr > m_numberOfHouses + 1)
+        {
+            nr = 1;
+            ++p;
+        }
+        m_currentPit = {p, nr};
+    }
+
+    return *this;
+}
+
+const Pit &Board::Iterator::operator*() const
+{
+    return m_currentPit;
 }

@@ -26,5 +26,5 @@ Pit ConsoleInputPlayer::selectHouse(const AbstractBoard &board) const
         std::cout << ": ";
         std::cin >> selected;
     }
-    return board.house(playerNumber(), selected);
+    return {playerNumber(), selected};
 }

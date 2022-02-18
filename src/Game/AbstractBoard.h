@@ -19,9 +19,7 @@ public:
     virtual ~AbstractBoard() = default;
 
     [[nodiscard]] virtual int numberOfHouses() const = 0;
-    [[nodiscard]] virtual Pit pit(PlayerNumber player, int pitNumber) const = 0;
-    [[nodiscard]] virtual Pit house(PlayerNumber player, int houseNumber) const = 0;
-    [[nodiscard]] virtual Pit store(PlayerNumber player) const = 0;
+    [[nodiscard]] virtual int storeId() const = 0;
     [[nodiscard]] virtual int seedCount(const Pit &pit) const = 0;
 
     virtual std::optional<PlayerNumber> saw(const Pit &startPit) = 0;
@@ -29,4 +27,7 @@ public:
     virtual std::optional<PlayerNumber> moveRemainingSeedsToStore() = 0;
 
     void print(std::ostream &stream, int intWidth = 2) const;
+
+private:
+    std::string format(const Pit &pit, int width) const;
 };

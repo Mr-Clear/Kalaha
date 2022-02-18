@@ -11,23 +11,6 @@ std::string filler(const std::string &character, int width)
         s += character;
     return s;
 }
-
-std::string format(const Pit& pit, int width)
-{
-    std::stringstream ss;
-    std::string brackets = "  ";
-
-    const AbstractBoard &board = pit.board();
-    if (board.lastTurn())
-    {
-        if (board.lastTurn().value().selectedPit == pit)
-            brackets = "[]";
-        else if(board.lastTurn().value().changedPits.contains(pit))
-            brackets = "()";
-    }
-    ss << brackets[0] << std::setw(width) << board.seedCount(pit) << brackets[1];
-    return ss.str();
-}
 }
 
 void AbstractBoard::print(std::ostream &stream, int intWidth) const
@@ -40,22 +23,38 @@ void AbstractBoard::print(std::ostream &stream, int intWidth) const
     // Houses Player One
     stream << "║" << filler(" ", intWidth) << "│";
     for (int i = numberOfHouses(); i >= 1; --i)
-        stream << format(house(PlayerNumber::One, i), intWidth) << "│";
+        stream << format({PlayerNumber::One, i}, intWidth) << "│";
     stream << filler(" ", intWidth) << "║" << std::endl;
     // Stores
-    stream << "║" << format(store(PlayerNumber::One), intWidth);
+    stream << "║" << format({PlayerNumber::One, numberOfHouses() + 1}, intWidth);
     stream << "├" << filler("─", intWidth);
     for (int i = 2; i <= numberOfHouses(); ++i)
         stream << "┼" << filler("─", intWidth);
-    stream << "┤" << format(store(PlayerNumber::Two), intWidth) << "║" << std::endl;
+    stream << "┤" << format({PlayerNumber::Two, numberOfHouses() + 1}, intWidth) << "║" << std::endl;
     // Houses Player Two
     stream << "║" << filler(" ", intWidth) << "│";
     for (int i = 1; i <= numberOfHouses(); ++i)
-        stream << format(house(PlayerNumber::Two, i), intWidth) << "│";
+        stream << format({PlayerNumber::Two, i}, intWidth) << "│";
     stream << filler(" ", intWidth) << "║" << std::endl;
     // Bottom Border
     stream << "╚" << filler("═", intWidth) << "╧";
     for (int i = 1; i <= numberOfHouses(); ++i)
         stream << filler("═", intWidth) << "╧";
     stream << filler("═", intWidth) << "╝" << std::endl;
+}
+
+std::string AbstractBoard::format(const Pit& pit, int width) const
+{
+    std::stringstream ss;
+    std::string brackets = "  ";
+
+    if (lastTurn())
+    {
+        if (lastTurn().value().selectedPit == pit)
+            brackets = "[]";
+        else if(lastTurn().value().changedPits.contains(pit))
+            brackets = "()";
+    }
+    ss << brackets[0] << std::setw(width) << seedCount(pit) << brackets[1];
+    return ss.str();
 }
