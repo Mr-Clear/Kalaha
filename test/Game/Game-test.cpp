@@ -16,12 +16,12 @@ using ::testing::_;
 TEST(GameTest, mocked)
 {
     MockOutput output;
-    std::unique_ptr<MockBoard> board{new MockBoard{3, {}}};
+    std::unique_ptr<MockBoard> board{new MockBoard{3, {1, 1, 1, 4, 1, 1, 1, 6}}};
 
     std::shared_ptr<MockPlayer> playerA{std::make_shared<MockPlayer>(One)};
-    playerA->defineSequence({1, 2}, *board);
+    playerA->defineSequence({1, 2});
     std::shared_ptr<MockPlayer> playerB{std::make_shared<MockPlayer>(Two)};
-    playerB->defineSequence({1}, *board);
+    playerB->defineSequence({1});
 
     EXPECT_CALL(output, showBoard(_)).Times(5);
     EXPECT_CALL(output, showTurn(1, One));
@@ -37,6 +37,6 @@ TEST(GameTest, mocked)
     {
         std::map<PlayerNumber, std::shared_ptr<AbstractPlayer>> playerMap{{One, playerA}, {Two, playerB}};
         Game game{std::move(board), output, playerMap};
-        game.start(One);
+        EXPECT_EQ(game.start(), (Game::Outcome{{4, 6}, Two, 4}));
     }
 }

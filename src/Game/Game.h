@@ -11,9 +11,17 @@ class AbstractOutput;
 class Game
 {
 public:
-    Game(int numberOfHouses, int startSeedsPerHouse, AbstractOutput &output, std::map<PlayerNumber, std::shared_ptr<AbstractPlayer>> &players);
+    Game(const Rules &rules, AbstractOutput &output, std::map<PlayerNumber, std::shared_ptr<AbstractPlayer>> &players);
 
-    void start(PlayerNumber startPlayer);
+    struct Outcome
+    {
+        std::pair<int, int> seeds;
+        std::optional<PlayerNumber> winner;
+        int playedRounds;
+
+        friend auto operator<=>(const Outcome&, const Outcome&) = default;
+    };
+    Outcome start(PlayerNumber startPlayer = PlayerNumber::One);
 
 private:
     std::unique_ptr<AbstractBoard> m_board;
@@ -24,3 +32,5 @@ private:
     Game(std::unique_ptr<AbstractBoard> board, AbstractOutput &output, std::map<PlayerNumber, std::shared_ptr<AbstractPlayer>> &players);
 };
 
+std::ostream &operator<<(std::ostream &os, const Game::Outcome &outcome);
+std::ostream &operator<<(std::ostream &os, const std::optional<PlayerNumber> &player);
