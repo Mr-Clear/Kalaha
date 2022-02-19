@@ -93,7 +93,7 @@ std::optional<PlayerNumber> Board::saw(const Pit &startPit)
     int seeds = seedCount(startPit);
     assert(seeds > 0);
 
-    m_lastTurn = Turn{player, startPit};
+    m_lastTurn = Turn{player, startPit, {}};
 
     clearSeedCount(startPit);
 

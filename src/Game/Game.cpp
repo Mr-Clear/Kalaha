@@ -43,6 +43,7 @@ Game::Outcome Game::start(PlayerNumber startPlayer)
         }
     }
     assert(false);
+    return{};
 }
 
 std::ostream &operator<<(std::ostream &os, const std::optional<PlayerNumber> &p)
