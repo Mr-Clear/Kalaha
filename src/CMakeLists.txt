@@ -7,5 +7,3 @@ set(SOURCES ${SOURCES})
 add_executable(${BINARY} ${SOURCES})
 
 add_library(${BINARY}_lib STATIC ${SOURCES})
-
-message(${PROJECT_NAME})
