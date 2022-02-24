@@ -47,7 +47,7 @@ void Ai::addLayer(std::unique_ptr<AbstractLayer> &layer)
     m_AbstractLayers.emplace_back(std::move(layer));
 }
 
-std::vector<float> Ai::calculate(const std::vector<float> &input)
+std::vector<float> Ai::calculate(const std::vector<float> &input) const
 {
     if (m_AbstractLayers.size() && input.size() != m_AbstractLayers.front()->inputSize())
         throw std::invalid_argument{"Input has different size (" + std::to_string(input.size()) + ") "

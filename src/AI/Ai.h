@@ -17,7 +17,7 @@ public:
 
     void addLayer(AbstractLayer *layer);
     void addLayer(std::unique_ptr<AbstractLayer> &layer);
-    std::vector<float> calculate(const std::vector<float> &input);
+    [[nodiscard]] std::vector<float> calculate(const std::vector<float> &input) const;
     void mutate(float stddev);
 
 private:
