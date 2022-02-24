@@ -1,4 +1,3 @@
-#include "AI/InputLayer.h"
 #include "AI/FullyConnectedLayer.h"
 #include "AI/FunctionLayer.h"
 
@@ -14,28 +13,6 @@ void verifyOutput(const std::vector<float> &l, std::initializer_list<float> v)
         EXPECT_EQ(l[i], *iv) << "at index " << i;
     }
 }
-}
-
-TEST(LayerTest, testInputLayer)
-{
-    InputLayer il(6);
-    EXPECT_EQ(il.outputSize(), 6);
-    EXPECT_EQ(il.values()[0], 0);
-    verifyOutput(il.values(), {0, 0, 0, 0, 0, 0});
-    il.set(4, 3.f);
-    EXPECT_EQ(il.values()[4], 3);
-    verifyOutput(il.values(), {0, 0, 0, 0, 3, 0});
-    il.set({1, 2, 3, 4, 5, 6});
-    verifyOutput(il.values(), {1, 2, 3, 4, 5, 6});
-    EXPECT_EQ(il.value(0), 1);
-
-    std::vector<float> vals{6, 5, 4, 3, 2, 1};
-    il.set(vals.begin(), vals.end());
-    verifyOutput(il.values(), {6, 5, 4, 3, 2, 1});
-
-    il = InputLayer{1, 5, 9, 7, 5, 3};
-    verifyOutput(il.values(), {1, 5, 9, 7, 5, 3});
-
 }
 
 TEST(LayerTest, testFullyConnectedLayer)
@@ -116,9 +93,6 @@ TEST(LayerTest, functionLayer)
 
 TEST(LayerTest, setValuesExceptionTest)
 {
-    InputLayer il = InputLayer{1, 2, 3, 5};
-    ASSERT_THROW(il.set({0, 0, 0}), std::length_error);
-
     FullyConnectedLayer fcl{4, 3};
     ASSERT_THROW(fcl.setGain(1, 4, 0), std::out_of_range);
     ASSERT_THROW(fcl.setGain(-1, 0, 0), std::out_of_range);

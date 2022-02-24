@@ -1,29 +1,26 @@
 #pragma once
 
-#include "AI/InputLayer.h"
-#include "AI/InnerLayer.h"
+#include "AI/AbstractLayer.h"
 
 #include <memory>
+#include <optional>
 
 class Ai
 {
 public:
-    explicit Ai(const InputLayer &inputLayer);
+    explicit Ai() = default;
     Ai(const Ai &o);
     Ai &operator=(const Ai &o);
 
-    [[nodiscard]] InputLayer &inputLayer();
-    [[nodiscard]] const InputLayer &inputLayer() const;
     [[nodiscard]] int outputSize() const;
     [[nodiscard]] const AbstractLayer &lastLayer() const;
 
-    void addLayer(InnerLayer *layer);
-    void addLayer(std::unique_ptr<InnerLayer> &layer);
-    std::vector<float> calculate();
+    void addLayer(AbstractLayer *layer);
+    void addLayer(std::unique_ptr<AbstractLayer> &layer);
+    std::vector<float> calculate(const std::vector<float> &input);
     void mutate(float stddev);
 
 private:
-    InputLayer m_inputLayer;
-    std::vector<std::unique_ptr<InnerLayer>> m_innerLayers;
+    std::vector<std::unique_ptr<AbstractLayer>> m_AbstractLayers;
 };
 

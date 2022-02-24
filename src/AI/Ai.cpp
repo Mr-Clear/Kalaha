@@ -5,67 +5,55 @@
 #include <random>
 #include <stdexcept>
 
-Ai::Ai(const InputLayer &inputLayer) :
-    m_inputLayer(inputLayer)
-{ }
-
-Ai::Ai(const Ai &o) :
-    m_inputLayer{o.m_inputLayer}
+Ai::Ai(const Ai &o)
 {
-    m_innerLayers.reserve(o.m_innerLayers.size());
-    for (const auto &i : o.m_innerLayers)
-        m_innerLayers.emplace_back(std::unique_ptr<InnerLayer>(i->clone()));
+    m_AbstractLayers.reserve(o.m_AbstractLayers.size());
+    for (const auto &i : o.m_AbstractLayers)
+        m_AbstractLayers.emplace_back(std::unique_ptr<AbstractLayer>(i->clone()));
 }
 
 Ai &Ai::operator=(const Ai &o)
 {
-    m_inputLayer = o.m_inputLayer;
-    m_innerLayers.clear();
-    m_innerLayers.reserve(o.m_innerLayers.size());
-    for (const auto &i : o.m_innerLayers)
-        m_innerLayers.emplace_back(std::unique_ptr<InnerLayer>(i->clone()));
+    m_AbstractLayers.clear();
+    m_AbstractLayers.reserve(o.m_AbstractLayers.size());
+    for (const auto &i : o.m_AbstractLayers)
+        m_AbstractLayers.emplace_back(std::unique_ptr<AbstractLayer>(i->clone()));
     return *this;
-}
-
-InputLayer &Ai::inputLayer()
-{
-    return m_inputLayer;
-}
-
-const InputLayer &Ai::inputLayer() const
-{
-    return m_inputLayer;
 }
 
 int Ai::outputSize() const
 {
+    if (m_AbstractLayers.empty())
+        return 0;
     return lastLayer().outputSize();
 }
 
 const AbstractLayer &Ai::lastLayer() const
 {
-    if (m_innerLayers.empty())
-        return m_inputLayer;
-    return *m_innerLayers.back();
+    return {*m_AbstractLayers.back()};
 }
 
-void Ai::addLayer(InnerLayer *layer)
+void Ai::addLayer(AbstractLayer *layer)
 {
-    std::unique_ptr<InnerLayer> p{layer};
+    std::unique_ptr<AbstractLayer> p{layer};
     addLayer(p);
 }
 
-void Ai::addLayer(std::unique_ptr<InnerLayer> &layer)
+void Ai::addLayer(std::unique_ptr<AbstractLayer> &layer)
 {
-    if (layer->inputSize() != lastLayer().outputSize())
-        throw std::invalid_argument{"Given layer has differnet parent than expected."};
-    m_innerLayers.emplace_back(std::move(layer));
+    if (m_AbstractLayers.size() && layer->inputSize() != lastLayer().outputSize())
+        throw std::invalid_argument{"Given layer different input size (" + std::to_string(layer->inputSize()) + ") "
+                                    "than previous layers output size (" + std::to_string(lastLayer().outputSize()) + ")."};
+    m_AbstractLayers.emplace_back(std::move(layer));
 }
 
-std::vector<float> Ai::calculate()
+std::vector<float> Ai::calculate(const std::vector<float> &input)
 {
-    std::vector<float> values = m_inputLayer.values();
-    for (auto &l : m_innerLayers)
+    if (m_AbstractLayers.size() && input.size() != m_AbstractLayers.front()->inputSize())
+        throw std::invalid_argument{"Input has different size (" + std::to_string(input.size()) + ") "
+                                    "than first layer input size (" + std::to_string(m_AbstractLayers.front()->inputSize()) + ")."};
+    std::vector<float> values = input;
+    for (auto &l : m_AbstractLayers)
         values = l->calculate(values);
     return values;
 }
@@ -74,7 +62,7 @@ void Ai::mutate(float stddev)
 {
     std::random_device rd{};
     std::mt19937 gen{rd()};
-    for (auto &l : m_innerLayers)
+    for (auto &l : m_AbstractLayers)
     {
         auto *fc = dynamic_cast<FullyConnectedLayer*>(l.get());
         if (fc)

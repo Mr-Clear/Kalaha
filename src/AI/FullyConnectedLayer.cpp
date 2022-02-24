@@ -3,7 +3,7 @@
 #include <cassert>
 
 FullyConnectedLayer::FullyConnectedLayer(int inputSize, int outputSize) :
-    InnerLayer{inputSize},
+    AbstractLayer{inputSize},
     m_gains(outputSize, std::vector<float>(inputSize, 1.f / inputSize)),
     m_bias(outputSize, 0)
 { }

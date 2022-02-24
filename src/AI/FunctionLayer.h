@@ -1,10 +1,10 @@
 #pragma once
 
-#include "AI/InnerLayer.h"
+#include "AI/AbstractLayer.h"
 
 #include <functional>
 
-class FunctionLayer : public InnerLayer
+class FunctionLayer : public AbstractLayer
 {
 public:
     FunctionLayer(int inputSize, const std::function<float(float)> &fn);

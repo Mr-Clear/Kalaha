@@ -1,12 +1,12 @@
 #pragma once
 
-#include "AI/InnerLayer.h"
+#include "AI/AbstractLayer.h"
 
 #include <functional>
 #include <iostream>
 #include <vector>
 
-class FullyConnectedLayer : public InnerLayer
+class FullyConnectedLayer : public AbstractLayer
 {
 public:
     FullyConnectedLayer(int inputSize, int outputSize);

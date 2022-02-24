@@ -13,7 +13,7 @@ const std::function<float(float)> gelu = [] (float v)
 };
 
 FunctionLayer::FunctionLayer(int inputSize, const std::function<float(float)> &fn) :
-    InnerLayer{inputSize},
+    AbstractLayer{inputSize},
     m_fn{fn}
 { }
 
