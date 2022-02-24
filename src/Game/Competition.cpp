@@ -29,10 +29,7 @@ std::vector<Competition::Outcome> Competition::run()
 
             const auto &playerTwo = m_players.at(j);
 
-            Board b{m_rules};
-            std::map<PlayerNumber, std::shared_ptr<AbstractPlayer>> m{{PlayerNumber::One, playerOne},
-                                                                      {PlayerNumber::Two, playerTwo}};
-            Game g{m_rules, m_output, m};
+            Game g{m_rules, m_output, std::array<std::shared_ptr<AbstractPlayer>, 2>{playerOne, playerTwo}};
             m_output.showNextGame(*playerOne, *playerTwo);
             Game::Outcome o = g.start();
 

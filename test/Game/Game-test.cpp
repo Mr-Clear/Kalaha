@@ -35,8 +35,7 @@ TEST(GameTest, mocked)
     EXPECT_CALL(*board, moveRemainingSeedsToStore).WillOnce(Return(Two));
 
     {
-        std::map<PlayerNumber, std::shared_ptr<AbstractPlayer>> playerMap{{One, playerA}, {Two, playerB}};
-        Game game{std::move(board), output, playerMap};
+        Game game{std::move(board), output, {playerA, playerB}};
         EXPECT_EQ(game.start(), (Game::Outcome{{4, 6}, Two, 4}));
     }
 }

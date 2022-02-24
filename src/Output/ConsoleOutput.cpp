@@ -37,15 +37,11 @@ void ConsoleOutput::showWinner(const std::optional<PlayerNumber> &winner)
         m_stream << " It's a Draw!" << endl;
 }
 
-void ConsoleOutput::showCompetitionEnd(const Competition::Outcome &outcome)
+void ConsoleOutput::showCompetitionEnd(const std::vector<Competition::Outcome> &outcome)
 {
-//    m_stream << "Competition ended. ";
-//    if (outcome.winner)
-//        m_stream << " Winner is " << outcome.winner.value();
-//    else
-//        m_stream << " It's a Draw";
-//    const int totalGames = std::accumulate(outcome.winsPerPlayerAndDraw.cbegin(), outcome.winsPerPlayerAndDraw.cend(), 0);
-//    m_stream << " with " << outcome.winsPerPlayerAndDraw[0] << " (" << std::round(outcome.winsPerPlayerAndDraw[0] * 100. / totalGames) << "%) wins for " << PlayerNumber::One;
-//    m_stream << ", " << outcome.winsPerPlayerAndDraw[1] << " (" << std::round(outcome.winsPerPlayerAndDraw[1] * 100. / totalGames) << "%) wins for " << PlayerNumber::Two;
-//    m_stream << " and " << outcome.winsPerPlayerAndDraw[2] << " (" << std::round(outcome.winsPerPlayerAndDraw[2] * 100. / totalGames) << "%) draws." << std::endl;
+    auto sorted = outcome;
+    std::sort(sorted.begin(), sorted.end(), [ ] (const Competition::Outcome &a, const Competition::Outcome &b) {
+        return std::make_pair(a.wins, a.totalSones) > std::make_pair(b.wins, b.totalSones);
+    });
+    m_stream << "Competition ended. " << " Winner is " << sorted.at(0).player << std::endl;
 }

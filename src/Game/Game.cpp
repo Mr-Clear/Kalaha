@@ -4,11 +4,11 @@
 
 #include <cassert>
 
-Game::Game(const Rules &rules, AbstractOutput &output, std::map<PlayerNumber, std::shared_ptr<AbstractPlayer>> &players) :
+Game::Game(const Rules &rules, AbstractOutput &output, const std::array<std::shared_ptr<AbstractPlayer>, 2> &players) :
     Game(std::make_unique<Board>(rules), output, players)
 { }
 
-Game::Game(std::unique_ptr<AbstractBoard> board, AbstractOutput &output, std::map<PlayerNumber, std::shared_ptr<AbstractPlayer> > &players) :
+Game::Game(std::unique_ptr<AbstractBoard> board, AbstractOutput &output, const std::array<std::shared_ptr<AbstractPlayer>, 2> &players) :
     m_board{std::move(board)},
     m_output{output},
     m_players{players}
@@ -23,7 +23,7 @@ Game::Outcome Game::start(PlayerNumber startPlayer)
     m_output.showTurn(turn, playerNumber.value());
     while(playerNumber)
     {
-        std::shared_ptr<AbstractPlayer> &player = m_players[playerNumber.value()];
+        std::shared_ptr<AbstractPlayer> &player = m_players[static_cast<int>(playerNumber.value())];
         Pit house = player->selectHouse(*m_board, playerNumber.value());
         assert(house.player() == playerNumber);
         playerNumber = m_board->saw(house);

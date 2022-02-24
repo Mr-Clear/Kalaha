@@ -11,7 +11,7 @@ class AbstractOutput;
 class Game
 {
 public:
-    Game(const Rules &rules, AbstractOutput &output, std::map<PlayerNumber, std::shared_ptr<AbstractPlayer>> &players);
+    Game(const Rules &rules, AbstractOutput &output, const std::array<std::shared_ptr<AbstractPlayer>, 2> &players);
 
     struct Outcome
     {
@@ -26,10 +26,10 @@ public:
 private:
     std::unique_ptr<AbstractBoard> m_board;
     AbstractOutput &m_output;
-    std::map<PlayerNumber, std::shared_ptr<AbstractPlayer>> &m_players;
+    std::array<std::shared_ptr<AbstractPlayer>, 2> m_players;
 
     FRIEND_TEST(GameTest, mocked);
-    Game(std::unique_ptr<AbstractBoard> board, AbstractOutput &output, std::map<PlayerNumber, std::shared_ptr<AbstractPlayer>> &players);
+    Game(std::unique_ptr<AbstractBoard> board, AbstractOutput &output, const std::array<std::shared_ptr<AbstractPlayer>, 2> &players);
 };
 
 std::ostream &operator<<(std::ostream &os, const Game::Outcome &outcome);
