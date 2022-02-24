@@ -1,10 +1,10 @@
 #include "InnerLayer.h"
 
-InnerLayer::InnerLayer(const AbstractLayer &predecessor) :
-    m_predecessor{predecessor}
+InnerLayer::InnerLayer(int inputSize) :
+    m_inputSize{inputSize}
 { }
 
-const AbstractLayer &InnerLayer::predecessor() const
+int InnerLayer::inputSize() const
 {
-    return m_predecessor;
+    return m_inputSize;
 }

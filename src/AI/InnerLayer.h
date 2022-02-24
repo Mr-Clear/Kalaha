@@ -2,14 +2,18 @@
 
 #include <AI/AbstractLayer.h>
 
+#include <vector>
+
 class InnerLayer : public AbstractLayer
 {
 public:
-    InnerLayer(const AbstractLayer &predecessor);
-    virtual void calculate() = 0;
+    InnerLayer(int inputSize);
+    [[nodiscard]] int inputSize() const;
 
-    [[nodiscard]] const AbstractLayer &predecessor() const;
+    virtual std::vector<float> calculate(const std::vector<float> &input) = 0;
+
+    [[nodiscard]] virtual InnerLayer *clone() const = 0;
 
 private:
-    const AbstractLayer &m_predecessor;
+    const int m_inputSize;
 };

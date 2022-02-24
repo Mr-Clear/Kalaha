@@ -3,23 +3,25 @@
 #include "AI/InputLayer.h"
 #include "AI/InnerLayer.h"
 
-#include <functional>
+#include <memory>
 
 class Ai
 {
 public:
     explicit Ai(const InputLayer &inputLayer);
+    Ai(const Ai &o);
+    Ai &operator=(const Ai &o);
 
     [[nodiscard]] int size() const;
     [[nodiscard]] const AbstractLayer &lastLayer() const;
-    float operator[](int index) const;
 
-    void addLayer(InnerLayer &layer);
-    void calculate();
+    void addLayer(InnerLayer *layer);
+    void addLayer(std::unique_ptr<InnerLayer> &layer);
+    std::vector<float> calculate();
     void mutate(float stddev);
 
 private:
-    const InputLayer &m_inputLayer;
-    std::vector<std::reference_wrapper<InnerLayer>> m_innerLayers;
+    InputLayer m_inputLayer;
+    std::vector<std::unique_ptr<InnerLayer>> m_innerLayers;
 };
 

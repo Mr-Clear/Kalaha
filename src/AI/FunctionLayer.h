@@ -7,11 +7,11 @@
 class FunctionLayer : public InnerLayer
 {
 public:
-    FunctionLayer(const AbstractLayer &predecessor, const std::function<float(float)> &fn);
+    FunctionLayer(int inputSize, const std::function<float(float)> &fn);
+    [[nodiscard]] FunctionLayer *clone() const override;
 
-    [[nodiscard]] int size() const override;
-    [[nodiscard]] float operator[](int index) const override;
-    void calculate() override { };
+    [[nodiscard]] int outputSize() const override;
+    std::vector<float> calculate(const std::vector<float> &input) override;
 
 private:
     std::function<float(float)> m_fn;

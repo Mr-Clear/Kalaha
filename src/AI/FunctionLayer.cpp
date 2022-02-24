@@ -12,17 +12,26 @@ const std::function<float(float)> gelu = [] (float v)
     return v * erfc(-v / sqrt(2)) / 2.f;
 };
 
-FunctionLayer::FunctionLayer(const AbstractLayer &predecessor, const std::function<float(float)> &fn) :
-    InnerLayer{predecessor},
+FunctionLayer::FunctionLayer(int inputSize, const std::function<float(float)> &fn) :
+    InnerLayer{inputSize},
     m_fn{fn}
 { }
 
-int FunctionLayer::size() const
+FunctionLayer *FunctionLayer::clone() const
 {
-    return predecessor().size();
+    return new FunctionLayer(*this);
 }
 
-float FunctionLayer::operator[](int index) const
+int FunctionLayer::outputSize() const
 {
-    return m_fn(predecessor()[index]);
+    return inputSize();
+}
+
+std::vector<float> FunctionLayer::calculate(const std::vector<float> &input)
+{
+    std::vector<float> output;
+    output.reserve(input.size());
+    for (float i : input)
+            output.emplace_back(m_fn(i));
+    return output;
 }

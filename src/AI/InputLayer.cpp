@@ -11,24 +11,29 @@ InputLayer::InputLayer(std::initializer_list<float> values)
     m_values = values;
 }
 
-int InputLayer::size() const
+int InputLayer::outputSize() const
 {
     return m_values.size();
 }
 
-float &InputLayer::operator [](int index)
+const std::vector<float> InputLayer::values() const
+{
+    return m_values;
+}
+
+float InputLayer::value(int index) const
 {
     return m_values.at(index);
 }
 
-float InputLayer::operator [](int index) const
+void InputLayer::set(int index, float value)
 {
-    return m_values.at(index);
+    m_values.at(index) = value;
 }
 
 void InputLayer::set(const std::initializer_list<float> &values)
 {
-    if (values.size() != size())
-        throw std::length_error{"Input values size must be " + std::to_string(size()) + " but is " + std::to_string(values.size()) + "."};
+    if (values.size() != outputSize())
+        throw std::length_error{"Input values size must be " + std::to_string(outputSize()) + " but is " + std::to_string(values.size()) + "."};
     set(values.begin(), values.end());
 }

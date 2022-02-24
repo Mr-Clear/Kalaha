@@ -2,35 +2,37 @@
 
 #include <cassert>
 
-FullyConnectedLayer::FullyConnectedLayer(int size, const AbstractLayer &predecessor) :
-    InnerLayer{predecessor},
-    m_gains(size, std::vector<float>(predecessor.size(), 1.f / predecessor.size())),
-    m_bias(size, 0),
-    m_values(size, 0)
+FullyConnectedLayer::FullyConnectedLayer(int size, int inputSize) :
+    InnerLayer{inputSize},
+    m_gains(size, std::vector<float>(inputSize, 1.f / inputSize)),
+    m_bias(size, 0)
 { }
 
-int FullyConnectedLayer::size() const
+FullyConnectedLayer *FullyConnectedLayer::clone() const
+{
+    return new FullyConnectedLayer(*this);
+}
+
+int FullyConnectedLayer::outputSize() const
 {
     return m_bias.size();
 }
 
-float FullyConnectedLayer::operator[](int index) const
+std::vector<float> FullyConnectedLayer::calculate(const std::vector<float> &input)
 {
-    return m_values.at(index);
-}
-
-void FullyConnectedLayer::calculate()
-{
-    for (int i = 0; i < size(); ++i)
+    std::vector<float> output;
+    output.reserve(outputSize());
+    for (int i = 0; i < outputSize(); ++i)
     {
         const auto &g = m_gains.at(i);
         float val = m_bias.at(i);
-        for (int j = 0; j < predecessor().size(); ++j)
+        for (int j = 0; j < input.size(); ++j)
         {
-            val += predecessor()[j] * g.at(j);
+            val += input[j] * g.at(j);
         }
-        m_values.at(i) = val;
+        output.emplace_back(val);
     }
+    return output;
 }
 
 float FullyConnectedLayer::gain(int myId, int preId) const
@@ -50,14 +52,14 @@ void FullyConnectedLayer::setGain(int myId, int preId, float gain)
 
 void FullyConnectedLayer::setGains(const std::initializer_list<std::initializer_list<float>> &gainValues)
 {
-    if (gainValues.size() != size())
-        throw std::length_error{"Gain values size must be " + std::to_string(size()) + " but is " + std::to_string(gainValues.size()) + "."};
+    if (gainValues.size() != outputSize())
+        throw std::length_error{"Gain values size must be " + std::to_string(outputSize()) + " but is " + std::to_string(gainValues.size()) + "."};
     auto ig = m_gains.begin();
     auto iv = gainValues.begin();
     for (; ig != m_gains.end(); ++ig, ++iv)
     {
-        if (iv->size() != predecessor().size())
-            throw std::length_error{"Gain values size must be " + std::to_string(predecessor().size()) + " but is " + std::to_string(iv->size()) + "."};
+        if (iv->size() != inputSize())
+            throw std::length_error{"Gain values size must be " + std::to_string(inputSize()) + " but is " + std::to_string(iv->size()) + "."};
         assert(iv != gainValues.end());
         *ig = *iv;
     }
@@ -65,15 +67,15 @@ void FullyConnectedLayer::setGains(const std::initializer_list<std::initializer_
 
 void FullyConnectedLayer::setGains(int id, const std::initializer_list<float> &gainValues)
 {
-    if (gainValues.size() != predecessor().size())
-        throw std::length_error{"Gain values size must be " + std::to_string(size()) + " but is " + std::to_string(gainValues.size()) + "."};
+    if (gainValues.size() != inputSize())
+        throw std::length_error{"Gain values size must be " + std::to_string(outputSize()) + " but is " + std::to_string(gainValues.size()) + "."};
     m_gains.at(id) = gainValues;
 }
 
 void FullyConnectedLayer::setBias(const std::initializer_list<float> &biasValues)
 {
-    if (biasValues.size() != size())
-        throw std::length_error{"Bias values size must be " + std::to_string(size()) + " but is " + std::to_string(biasValues.size()) + "."};
+    if (biasValues.size() != outputSize())
+        throw std::length_error{"Bias values size must be " + std::to_string(outputSize()) + " but is " + std::to_string(biasValues.size()) + "."};
     m_bias = biasValues;
 }
 
@@ -84,10 +86,10 @@ void FullyConnectedLayer::setBias(int id, float bias)
 
 void FullyConnectedLayer::manipulateGain(const std::function<float (float)> &fn)
 {
-    for (int i = 0; i < size(); ++i)
+    for (int i = 0; i < outputSize(); ++i)
     {
         auto &g = m_gains.at(i);
-        for (int j = 0; j < predecessor().size(); ++j)
+        for (int j = 0; j < inputSize(); ++j)
         {
             g.at(j) = fn(g.at(j));
         }
@@ -98,7 +100,6 @@ void FullyConnectedLayer::manipulateBias(const std::function<float (float)> &fn)
 {
     for (float &b : m_bias)
         b = fn(b);
-
 }
 
 void FullyConnectedLayer::manipulateAll(const std::function<float (float)> &fn)

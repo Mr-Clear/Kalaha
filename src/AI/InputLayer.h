@@ -10,17 +10,16 @@ public:
     InputLayer(int size);
     InputLayer(std::initializer_list<float> values);
 
-    [[nodiscard]] int size() const override;
-    float &operator[](int index);
-    float operator[](int index) const override;
+    [[nodiscard]] int outputSize() const override;
+    [[nodiscard]] const std::vector<float> values() const;
+    [[nodiscard]] float value(int index) const;
+    void set(int index, float value);
     void set(const std::initializer_list<float> &values);
     template <typename Iterator>
     void set(Iterator begin, const Iterator &end)
     {
         for (auto i = m_values.begin(); begin != end; ++begin, ++i)
-        {
-            *i = *begin;
-        }
+            *i = static_cast<float>(*begin);
     }
 
 private:

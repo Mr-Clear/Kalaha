@@ -9,10 +9,11 @@
 class FullyConnectedLayer : public InnerLayer
 {
 public:
-    FullyConnectedLayer(int size, const AbstractLayer &predecessor);
-    [[nodiscard]] int size() const override;
-    [[nodiscard]] float operator[](int index) const override;
-    void calculate() override;
+    FullyConnectedLayer(int size, int inputSize);
+    [[nodiscard]] FullyConnectedLayer *clone() const override;
+
+    [[nodiscard]] int outputSize() const override;
+    std::vector<float> calculate(const std::vector<float> &input) override;
 
     [[nodiscard]] float gain(int myId, int preId) const;
     [[nodiscard]] float bias(int id) const;
@@ -32,6 +33,4 @@ public:
 private:
     std::vector<std::vector<float>> m_gains;
     std::vector<float> m_bias;
-
-    std::vector<float> m_values;
 };
