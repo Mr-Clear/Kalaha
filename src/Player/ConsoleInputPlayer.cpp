@@ -6,6 +6,10 @@
 #include <iterator>
 #include <sstream>
 
+ConsoleInputPlayer::ConsoleInputPlayer(const std::string &name) :
+    AbstractPlayer{name}
+{ }
+
 Pit ConsoleInputPlayer::selectHouse(const AbstractBoard &board, PlayerNumber playerNumber) const
 {
     const std::set<Pit> options = getOptions(board, playerNumber);

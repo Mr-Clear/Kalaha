@@ -43,5 +43,5 @@ void ConsoleOutput::showCompetitionEnd(const std::vector<Competition::Outcome> &
     std::sort(sorted.begin(), sorted.end(), [ ] (const Competition::Outcome &a, const Competition::Outcome &b) {
         return std::make_pair(a.wins, a.totalSones) > std::make_pair(b.wins, b.totalSones);
     });
-    m_stream << "Competition ended. " << " Winner is " << sorted.at(0).player << std::endl;
+    m_stream << "Competition ended. " << " Winner is " << sorted.at(0).player->name() << std::endl;
 }

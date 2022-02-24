@@ -18,9 +18,9 @@ TEST(GameTest, mocked)
     MockOutput output;
     std::unique_ptr<MockBoard> board{new MockBoard{3, {1, 1, 1, 4, 1, 1, 1, 6}}};
 
-    std::shared_ptr<MockPlayer> playerA{std::make_shared<MockPlayer>()};
+    std::shared_ptr<MockPlayer> playerA{std::make_shared<MockPlayer>("A")};
     playerA->defineSequence(One, {1, 2});
-    std::shared_ptr<MockPlayer> playerB{std::make_shared<MockPlayer>()};
+    std::shared_ptr<MockPlayer> playerB{std::make_shared<MockPlayer>("B")};
     playerB->defineSequence(Two, {1});
 
     EXPECT_CALL(output, showBoard(_)).Times(5);

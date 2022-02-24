@@ -8,6 +8,8 @@
 class MockPlayer : public AbstractPlayer
 {
 public:
+    explicit MockPlayer(const std::string &name);
+
     MOCK_METHOD(Pit, selectHouse, (const AbstractBoard &board, PlayerNumber playerNumber), (const, override));
 
     void defineSequence(PlayerNumber playerNumber, const std::initializer_list<int> &sequence);

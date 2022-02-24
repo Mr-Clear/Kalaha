@@ -16,3 +16,12 @@ std::set<Pit> AbstractPlayer::getOptions(const AbstractBoard &board, PlayerNumbe
     assert(!options.empty());
     return options;
 }
+
+AbstractPlayer::AbstractPlayer(const std::string &name) :
+    m_name{name}
+{ }
+
+const std::string &AbstractPlayer::name() const
+{
+    return m_name;
+}

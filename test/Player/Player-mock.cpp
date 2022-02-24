@@ -2,6 +2,10 @@
 
 #include "Game/AbstractBoard.h"
 
+MockPlayer::MockPlayer(const std::string &name) :
+    AbstractPlayer{name}
+{ }
+
 void MockPlayer::defineSequence(PlayerNumber playerNumber, const std::initializer_list<int> &sequence)
 {
     auto &a = EXPECT_CALL(*this, selectHouse);

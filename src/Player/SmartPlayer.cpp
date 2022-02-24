@@ -4,6 +4,10 @@
 
 #include <cassert>
 
+SmartPlayer::SmartPlayer(const std::string &name) :
+    AbstractPlayer{name}
+{ }
+
 Pit SmartPlayer::selectHouse(const AbstractBoard &board, PlayerNumber playerNumber) const
 {
     std::vector<int> storeSeeds;

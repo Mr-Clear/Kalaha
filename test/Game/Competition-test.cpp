@@ -11,8 +11,8 @@ using PlayerNumber::Two;
 
 TEST(CompetitionTest, twoPlayerGameWonByPlayerTwo)
 {
-    std::shared_ptr<MockPlayer> playerA{std::make_shared<MockPlayer>()};
-    std::shared_ptr<MockPlayer> playerB{std::make_shared<MockPlayer>()};
+    std::shared_ptr<MockPlayer> playerA{std::make_shared<MockPlayer>("A")};
+    std::shared_ptr<MockPlayer> playerB{std::make_shared<MockPlayer>("B")};
     MockOutput o;
     EXPECT_CALL(o, showBoard(testing::_)).Times(13);
     EXPECT_CALL(o, showNextGame).Times(2);
@@ -40,9 +40,9 @@ TEST(CompetitionTest, twoPlayerGameWonByPlayerTwo)
 
 TEST(CompetitionTest, threePlayerGame)
 {
-    std::shared_ptr<MockPlayer> playerA{std::make_shared<MockPlayer>()};
-    std::shared_ptr<MockPlayer> playerB{std::make_shared<MockPlayer>()};
-    std::shared_ptr<MockPlayer> playerC{std::make_shared<MockPlayer>()};
+    std::shared_ptr<MockPlayer> playerA{std::make_shared<MockPlayer>("A")};
+    std::shared_ptr<MockPlayer> playerB{std::make_shared<MockPlayer>("B")};
+    std::shared_ptr<MockPlayer> playerC{std::make_shared<MockPlayer>("C")};
     MockOutput o;
     EXPECT_CALL(o, showBoard).Times(18);
     EXPECT_CALL(o, showNextGame).Times(6);

@@ -5,6 +5,10 @@
 
 #include <cassert>
 
+RandomPlayer::RandomPlayer(const std::string &name) :
+    AbstractPlayer{name}
+{ }
+
 Pit RandomPlayer::selectHouse(const AbstractBoard &board, PlayerNumber playerNumber) const
 {
     const std::set<Pit> options = getOptions(board, playerNumber);
