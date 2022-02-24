@@ -1,20 +1,20 @@
-#include "Competition.h"
+#include "Tournament.h"
 
 #include "Game/Game.h"
 #include "Output/NullOutput.h"
 
 #include <cassert>
 
-Competition::Competition(const Rules &rules, const std::vector<std::shared_ptr<AbstractPlayer> > &players, int rounds, AbstractOutput &output):
+Tournament::Tournament(const Rules &rules, const std::vector<std::shared_ptr<AbstractPlayer> > &players, int rounds, AbstractOutput &output):
     m_rules{rules},
     m_players{players},
     m_rounds{rounds},
     m_output{output}
 { }
 
-std::vector<Competition::Outcome> Competition::run()
+std::vector<Tournament::Outcome> Tournament::run()
 {
-    std::vector<Competition::Outcome> outcome;
+    std::vector<Tournament::Outcome> outcome;
     outcome.reserve(m_players.size());
     for (const auto &p : m_players)
         outcome.emplace_back(p);

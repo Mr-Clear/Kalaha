@@ -11,5 +11,5 @@ public:
     MOCK_METHOD(void, showTurn, (int number, PlayerNumber player), (override));
     MOCK_METHOD(void, showBoard, (const AbstractBoard &board), (override));
     MOCK_METHOD(void, showWinner, (const std::optional<PlayerNumber> &winner), (override));
-    MOCK_METHOD(void, showCompetitionEnd, (const std::vector<Competition::Outcome> &outcome), (override));
+    MOCK_METHOD(void, showTournamentEnd, (const std::vector<Tournament::Outcome> &outcome), (override));
 };

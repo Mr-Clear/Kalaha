@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Game/Board.h"
-#include "Game/Competition.h"
+#include "Game/Tournament.h"
 
 class AbstractOutput
 {
@@ -12,6 +12,6 @@ public:
     virtual void showTurn(int number, PlayerNumber player) = 0;
     virtual void showBoard(const AbstractBoard &board) = 0;
     virtual void showWinner(const std::optional<PlayerNumber> &winner) = 0;
-    virtual void showCompetitionEnd(const std::vector<Competition::Outcome> &outcome) = 0;
+    virtual void showTournamentEnd(const std::vector<Tournament::Outcome> &outcome) = 0;
 };
 

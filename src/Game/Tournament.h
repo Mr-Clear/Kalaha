@@ -8,7 +8,7 @@
 
 class AbstractOutput;
 
-class Competition
+class Tournament
 {
 public:
     struct Outcome
@@ -22,7 +22,7 @@ public:
         friend auto operator<=>(const Outcome&, const Outcome&) = default;
     };
 
-    Competition(const Rules &rules, const std::vector<std::shared_ptr<AbstractPlayer>> &players,
+    Tournament(const Rules &rules, const std::vector<std::shared_ptr<AbstractPlayer>> &players,
                 int rounds, AbstractOutput &output);
 
     const Rules m_rules;
@@ -30,5 +30,5 @@ public:
     const int m_rounds;
     AbstractOutput &m_output;
 
-    std::vector<Competition::Outcome> run();
+    std::vector<Tournament::Outcome> run();
 };

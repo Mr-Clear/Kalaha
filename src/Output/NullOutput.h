@@ -9,5 +9,5 @@ public:
     void showBoard(const AbstractBoard &) override { }
     void showTurn(int, PlayerNumber) override { }
     void showWinner(const std::optional<PlayerNumber> &) override { }
-    void showCompetitionEnd(const std::vector<Competition::Outcome> &) override { };
+    void showTournamentEnd(const std::vector<Tournament::Outcome> &) override { };
 };

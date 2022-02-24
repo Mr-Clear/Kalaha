@@ -39,10 +39,10 @@ void ConsoleOutput::showWinner(const std::optional<PlayerNumber> &winner)
         m_stream << " It's a Draw!" << endl;
 }
 
-void ConsoleOutput::showCompetitionEnd(const std::vector<Competition::Outcome> &outcome)
+void ConsoleOutput::showTournamentEnd(const std::vector<Tournament::Outcome> &outcome)
 {
     auto sorted = outcome;
-    std::sort(sorted.begin(), sorted.end(), [ ] (const Competition::Outcome &a, const Competition::Outcome &b) {
+    std::sort(sorted.begin(), sorted.end(), [ ] (const Tournament::Outcome &a, const Tournament::Outcome &b) {
         return std::make_pair(a.wins, a.totalSones) > std::make_pair(b.wins, b.totalSones);
     });
     int maxName = 6; // "Player"
@@ -52,7 +52,7 @@ void ConsoleOutput::showCompetitionEnd(const std::vector<Competition::Outcome> &
         if (maxName < len)
             maxName = len;
     }
-    m_stream << "Competition ended. " << " Winner is " << sorted.at(0).player->name() << std::endl;
+    m_stream << "Tournament ended. " << " Winner is " << sorted.at(0).player->name() << std::endl;
     m_stream << "╔" << rep(maxName, "═") << "╤═══════╤═══════╤═══════╤═══════╗" << endl;
     m_stream << "║" << rep(maxName - 6, " ") << "Player│   Wins│Defeats│  Draws│ Stones║" << endl;
     m_stream << "╟" << rep(maxName, "─") << "┼───────┼───────┼───────┼───────╢" << endl;

@@ -21,7 +21,7 @@ public:
     void showBoard(const AbstractBoard &board) override;
     void showTurn(int number, PlayerNumber player) override;
     void showWinner(const std::optional<PlayerNumber> &winner) override;
-    void showCompetitionEnd(const std::vector<Competition::Outcome> &outcome) override;
+    void showTournamentEnd(const std::vector<Tournament::Outcome> &outcome) override;
 
 private:
     const int m_width;

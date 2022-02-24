@@ -1,4 +1,4 @@
-#include "Game/Competition.h"
+#include "Game/Tournament.h"
 
 #include "../test/Game/Board-mock.h"
 #include "../test/Player/Player-mock.h"
@@ -9,7 +9,7 @@
 using PlayerNumber::One;
 using PlayerNumber::Two;
 
-TEST(CompetitionTest, twoPlayerGameWonByPlayerTwo)
+TEST(TournamentTest, twoPlayerGameWonByPlayerTwo)
 {
     std::shared_ptr<MockPlayer> playerA{std::make_shared<MockPlayer>("A")};
     std::shared_ptr<MockPlayer> playerB{std::make_shared<MockPlayer>("B")};
@@ -27,18 +27,18 @@ TEST(CompetitionTest, twoPlayerGameWonByPlayerTwo)
     EXPECT_CALL(o, showTurn(6, Two));
     EXPECT_CALL(o, showTurn(7, Two));
     EXPECT_CALL(o, showWinner(std::optional<PlayerNumber>()));
-    Competition c{{2, 2}, {std::static_pointer_cast<AbstractPlayer>(playerA), std::static_pointer_cast<AbstractPlayer>(playerB)}, 1, o};
+    Tournament c{{2, 2}, {std::static_pointer_cast<AbstractPlayer>(playerA), std::static_pointer_cast<AbstractPlayer>(playerB)}, 1, o};
 
     playerA->defineSequence({{One, 1}, {One, 2},
                              {Two, 1}, {Two, 2}, {Two, 1}, {Two, 2}});
     playerB->defineSequence(One, {2, 1, 2});
 
-    std::vector<Competition::Outcome> out = c.run();
-    EXPECT_EQ(out[0], (Competition::Outcome{playerA, 0, 1, 1, 6}));
-    EXPECT_EQ(out[1], (Competition::Outcome{playerB, 1, 0, 1, 10}));
+    std::vector<Tournament::Outcome> out = c.run();
+    EXPECT_EQ(out[0], (Tournament::Outcome{playerA, 0, 1, 1, 6}));
+    EXPECT_EQ(out[1], (Tournament::Outcome{playerB, 1, 0, 1, 10}));
 }
 
-TEST(CompetitionTest, threePlayerGame)
+TEST(TournamentTest, threePlayerGame)
 {
     std::shared_ptr<MockPlayer> playerA{std::make_shared<MockPlayer>("A")};
     std::shared_ptr<MockPlayer> playerB{std::make_shared<MockPlayer>("B")};
@@ -48,15 +48,15 @@ TEST(CompetitionTest, threePlayerGame)
     EXPECT_CALL(o, showNextGame).Times(6);
     EXPECT_CALL(o, showTurn(1, One)).Times(6);
     EXPECT_CALL(o, showWinner(std::optional<PlayerNumber>())).Times(6);
-    Competition c{{1, 1}, {std::static_pointer_cast<AbstractPlayer>(playerA),
+    Tournament c{{1, 1}, {std::static_pointer_cast<AbstractPlayer>(playerA),
                            std::static_pointer_cast<AbstractPlayer>(playerB),
                            std::static_pointer_cast<AbstractPlayer>(playerC)}, 1, o};
     playerA->defineSequence({{One, 1}, {One, 1}});
     playerB->defineSequence({{One, 1}, {One, 1}});
     playerC->defineSequence({{One, 1}, {One, 1}});
 
-    const std::vector<Competition::Outcome> out = c.run();
-    EXPECT_EQ(out[0], (Competition::Outcome{playerA, 0, 0, 4, 4}));
-    EXPECT_EQ(out[1], (Competition::Outcome{playerB, 0, 0, 4, 4}));
-    EXPECT_EQ(out[2], (Competition::Outcome{playerC, 0, 0, 4, 4}));
+    const std::vector<Tournament::Outcome> out = c.run();
+    EXPECT_EQ(out[0], (Tournament::Outcome{playerA, 0, 0, 4, 4}));
+    EXPECT_EQ(out[1], (Tournament::Outcome{playerB, 0, 0, 4, 4}));
+    EXPECT_EQ(out[2], (Tournament::Outcome{playerC, 0, 0, 4, 4}));
 }
