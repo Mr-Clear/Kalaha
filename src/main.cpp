@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "Game/Competition.h"
+#include "Game/Tournament.h"
 #include "Game/Game.h"
 #include "Output/ConsoleOutput.h"
 #include "Output/NullOutput.h"
@@ -11,18 +11,27 @@
 #include <chrono>
 #include <memory>
 
-int main()
+void tournament()
 {
     NullOutput nullOutput;
-    std::shared_ptr<AbstractPlayer> playerA{std::make_shared<RandomPlayer>(PlayerNumber::One)};
-    std::shared_ptr<AbstractPlayer> playerB{std::make_shared<SmartPlayer>(PlayerNumber::Two)};
-    std::map<PlayerNumber, std::shared_ptr<AbstractPlayer>> playerMap{{PlayerNumber::One, playerA}, {PlayerNumber::Two, playerB}};
-    Competition c{{6, 6}, playerA, playerB, 10000, nullOutput};
+    std::vector<std::shared_ptr<AbstractPlayer>> players;
+    players.emplace_back(std::make_shared<SmartPlayer>("Smart Player"));
+    for (char i = 'A'; i <= 'Z'; i++)
+        players.emplace_back(std::make_shared<RandomPlayer>(std::string(1, i)));
+    Tournament c{{6, 6}, players, 10000, nullOutput};
 
-    const auto startTime = std::chrono::high_resolution_clock::now();
     auto outcome = c.run();
+    ConsoleOutput{}.showTournamentEnd(outcome);
+    std::cout << "Games: " << (players.size() * (players.size() - 1)) << std::endl;
+}
+
+int main()
+{
+    const auto startTime = std::chrono::high_resolution_clock::now();
+
+    tournament();
+
     const auto endTime = std::chrono::high_resolution_clock::now();
-    ConsoleOutput{}.showCompetitionEnd(outcome);
     const double duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
     std::cout << "Duration: " << duration << " ms" << std::endl;
     return 0;
