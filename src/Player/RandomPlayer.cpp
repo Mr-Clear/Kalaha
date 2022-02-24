@@ -5,12 +5,8 @@
 
 #include <cassert>
 
-RandomPlayer::RandomPlayer(PlayerNumber number) :
-    AbstractPlayer{number}
-{ }
-
-Pit RandomPlayer::selectHouse(const AbstractBoard &board) const
+Pit RandomPlayer::selectHouse(const AbstractBoard &board, PlayerNumber playerNumber) const
 {
-    const std::set<Pit> options = getOptions(board);
+    const std::set<Pit> options = getOptions(board, playerNumber);
     return *Tools::selectRandomItem(options.cbegin(), options.cend());
 }

@@ -5,8 +5,6 @@
 class SmartPlayer : public AbstractPlayer
 {
 public:
-    SmartPlayer(PlayerNumber playerNumber);
-
-    [[nodiscard]] Pit selectHouse(const AbstractBoard &board) const override;
+    [[nodiscard]] Pit selectHouse(const AbstractBoard &board, PlayerNumber playerNumber) const override;
 };
 

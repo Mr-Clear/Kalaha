@@ -13,20 +13,22 @@ class Competition
 public:
     struct Outcome
     {
-        std::vector<int> winsPerPlayerAndDraw;
-        std::optional<PlayerNumber> winner;
+        std::shared_ptr<AbstractPlayer> player;
+        int wins = 0;
+        int defeats = 0;
+        int draws = 0;
+        int totalSones = 0;
 
         friend auto operator<=>(const Outcome&, const Outcome&) = default;
     };
 
-    Competition(const Rules &rules, const std::shared_ptr<AbstractPlayer> &playerOne,
-                const std::shared_ptr<AbstractPlayer> &playerTwo, int rounds, AbstractOutput &output);
+    Competition(const Rules &rules, const std::vector<std::shared_ptr<AbstractPlayer>> &players,
+                int rounds, AbstractOutput &output);
 
     const Rules m_rules;
-    std::shared_ptr<AbstractPlayer> m_playerOne;
-    std::shared_ptr<AbstractPlayer> m_playerTwo;
+    std::vector<std::shared_ptr<AbstractPlayer>> m_players;
     const int m_rounds;
     AbstractOutput &m_output;
 
-    Outcome run();
+    std::vector<Competition::Outcome> run();
 };

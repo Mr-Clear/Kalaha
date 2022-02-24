@@ -6,25 +6,21 @@
 #include <iterator>
 #include <sstream>
 
-ConsoleInputPlayer::ConsoleInputPlayer(PlayerNumber number) :
-    AbstractPlayer{number}
-{ }
-
-Pit ConsoleInputPlayer::selectHouse(const AbstractBoard &board) const
+Pit ConsoleInputPlayer::selectHouse(const AbstractBoard &board, PlayerNumber playerNumber) const
 {
-    const std::set<Pit> options = getOptions(board);
+    const std::set<Pit> options = getOptions(board, playerNumber);
     std::set<int> optionNumbers;
     for (const Pit &p : options)
         optionNumbers.insert(p.number());
     int selected = 0;
     while (!optionNumbers.contains(selected))
     {
-        std::cout << playerNumber() << ", select next house from ";
+        std::cout << playerNumber << ", select next house from ";
         bool needSeperator = false;
         for (const auto& option : options)
             std::cout << (needSeperator ? ", " : (needSeperator = true, " ")) << option;
         std::cout << ": ";
         std::cin >> selected;
     }
-    return {playerNumber(), selected};
+    return {playerNumber, selected};
 }

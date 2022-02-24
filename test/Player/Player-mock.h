@@ -8,11 +8,8 @@
 class MockPlayer : public AbstractPlayer
 {
 public:
-    MockPlayer(PlayerNumber number) :
-        AbstractPlayer{number}
-    { }
+    MOCK_METHOD(Pit, selectHouse, (const AbstractBoard &board, PlayerNumber playerNumber), (const, override));
 
-    MOCK_METHOD(Pit, selectHouse, (const AbstractBoard &board), (const, override));
-
-    void defineSequence(const std::initializer_list<int> &sequence);
+    void defineSequence(PlayerNumber playerNumber, const std::initializer_list<int> &sequence);
+    void defineSequence(const std::initializer_list<std::pair<PlayerNumber, int>> &sequence);
 };

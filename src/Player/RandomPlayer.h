@@ -6,8 +6,6 @@
 class RandomPlayer : public AbstractPlayer
 {
 public:
-    RandomPlayer(PlayerNumber number);
-
-    [[nodiscard]] Pit selectHouse(const AbstractBoard &board) const override;
+    [[nodiscard]] Pit selectHouse(const AbstractBoard &board, PlayerNumber playerNumber) const override;
 };
 

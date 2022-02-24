@@ -24,10 +24,10 @@ Game::Outcome Game::start(PlayerNumber startPlayer)
     while(playerNumber)
     {
         std::shared_ptr<AbstractPlayer> &player = m_players[playerNumber.value()];
-        Pit house = player->selectHouse(*m_board);
+        Pit house = player->selectHouse(*m_board, playerNumber.value());
         assert(house.player() == playerNumber);
         playerNumber = m_board->saw(house);
-        turn++;
+        ++turn;
         m_output.showBoard(*m_board);
         if (playerNumber)
         {

@@ -18,10 +18,10 @@ TEST(GameTest, mocked)
     MockOutput output;
     std::unique_ptr<MockBoard> board{new MockBoard{3, {1, 1, 1, 4, 1, 1, 1, 6}}};
 
-    std::shared_ptr<MockPlayer> playerA{std::make_shared<MockPlayer>(One)};
-    playerA->defineSequence({1, 2});
-    std::shared_ptr<MockPlayer> playerB{std::make_shared<MockPlayer>(Two)};
-    playerB->defineSequence({1});
+    std::shared_ptr<MockPlayer> playerA{std::make_shared<MockPlayer>()};
+    playerA->defineSequence(One, {1, 2});
+    std::shared_ptr<MockPlayer> playerB{std::make_shared<MockPlayer>()};
+    playerB->defineSequence(Two, {1});
 
     EXPECT_CALL(output, showBoard(_)).Times(5);
     EXPECT_CALL(output, showTurn(1, One));
