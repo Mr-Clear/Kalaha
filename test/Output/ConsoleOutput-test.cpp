@@ -12,7 +12,7 @@ using PlayerNumber::Two;
 
 using ::testing::Return;
 
-TEST(ConsoleOutputTest, mocked)
+TEST(ConsoleOutputTest, board)
 {
     std::ostringstream stream;
     ConsoleOutput o{3, stream};

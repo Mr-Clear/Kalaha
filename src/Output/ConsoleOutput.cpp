@@ -2,9 +2,11 @@
 
 #include <cassert>
 #include <cmath>
+#include <iomanip>
 #include <numeric>
 
 using std::endl;
+using std::setw;
 
 ConsoleOutput::ConsoleOutput(int maxCountWidth, std::ostream &stream) :
     m_width{maxCountWidth},
@@ -43,5 +45,30 @@ void ConsoleOutput::showCompetitionEnd(const std::vector<Competition::Outcome> &
     std::sort(sorted.begin(), sorted.end(), [ ] (const Competition::Outcome &a, const Competition::Outcome &b) {
         return std::make_pair(a.wins, a.totalSones) > std::make_pair(b.wins, b.totalSones);
     });
+    int maxName = 6; // "Player"
+    for (auto & i : sorted)
+    {
+        const int len = i.player->name().size();
+        if (maxName < len)
+            maxName = len;
+    }
     m_stream << "Competition ended. " << " Winner is " << sorted.at(0).player->name() << std::endl;
+    m_stream << "╔" << rep(maxName, "═") << "╤═══════╤═══════╤═══════╤═══════╗" << endl;
+    m_stream << "║" << rep(maxName - 6, " ") << "Player│   Wins│Defeats│  Draws│ Stones║" << endl;
+    m_stream << "╟" << rep(maxName, "─") << "┼───────┼───────┼───────┼───────╢" << endl;
+    for (const auto &o : sorted)
+        m_stream << "║" << std::left << std::setw(maxName) << o.player->name() << std::right
+                 << "│" << std::setw(7) << o.wins
+                 << "│" << std::setw(7) << o.defeats
+                 << "│" << std::setw(7) << o.draws
+                 << "│" << std::setw(7) << o.totalSones << "║" << std::endl;
+    m_stream << "╚" << rep(maxName, "═") << "╧═══════╧═══════╧═══════╧═══════╝" << endl;
+}
+
+std::string ConsoleOutput::rep(int n, const std::string &s)
+{
+    std::string out;
+    for (int i = 0; i < n; ++i)
+        out += s;
+    return out;
 }

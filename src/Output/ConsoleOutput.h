@@ -28,4 +28,5 @@ private:
     std::ostream &m_stream;
 
     std::string printPit(const Pit &pit);
+    std::string rep(int n, const std::string &s);
 };
