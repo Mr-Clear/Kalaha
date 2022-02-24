@@ -10,6 +10,8 @@ public:
     InputLayer(int size);
     InputLayer(std::initializer_list<float> values);
 
+    bool operator==(const InputLayer &o) const;
+
     [[nodiscard]] int outputSize() const override;
     [[nodiscard]] const std::vector<float> values() const;
     [[nodiscard]] float value(int index) const;

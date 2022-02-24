@@ -27,7 +27,17 @@ Ai &Ai::operator=(const Ai &o)
     return *this;
 }
 
-int Ai::size() const
+InputLayer &Ai::inputLayer()
+{
+    return m_inputLayer;
+}
+
+const InputLayer &Ai::inputLayer() const
+{
+    return m_inputLayer;
+}
+
+int Ai::outputSize() const
 {
     return lastLayer().outputSize();
 }

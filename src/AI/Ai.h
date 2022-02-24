@@ -12,7 +12,9 @@ public:
     Ai(const Ai &o);
     Ai &operator=(const Ai &o);
 
-    [[nodiscard]] int size() const;
+    [[nodiscard]] InputLayer &inputLayer();
+    [[nodiscard]] const InputLayer &inputLayer() const;
+    [[nodiscard]] int outputSize() const;
     [[nodiscard]] const AbstractLayer &lastLayer() const;
 
     void addLayer(InnerLayer *layer);

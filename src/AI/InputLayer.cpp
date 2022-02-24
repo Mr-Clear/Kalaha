@@ -11,6 +11,11 @@ InputLayer::InputLayer(std::initializer_list<float> values)
     m_values = values;
 }
 
+bool InputLayer::operator==(const InputLayer &o) const
+{
+    return m_values == o.m_values;
+}
+
 int InputLayer::outputSize() const
 {
     return m_values.size();

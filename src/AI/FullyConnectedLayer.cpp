@@ -2,10 +2,10 @@
 
 #include <cassert>
 
-FullyConnectedLayer::FullyConnectedLayer(int size, int inputSize) :
+FullyConnectedLayer::FullyConnectedLayer(int inputSize, int outputSize) :
     InnerLayer{inputSize},
-    m_gains(size, std::vector<float>(inputSize, 1.f / inputSize)),
-    m_bias(size, 0)
+    m_gains(outputSize, std::vector<float>(inputSize, 1.f / inputSize)),
+    m_bias(outputSize, 0)
 { }
 
 FullyConnectedLayer *FullyConnectedLayer::clone() const

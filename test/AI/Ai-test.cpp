@@ -19,18 +19,19 @@ void verify(const std::vector<float> &v, const std::initializer_list<float> &ex)
 TEST(AiTest, testInputOnly)
 {
     Ai ai{{1, 2, 3, 4, 5, 6, 7, 8, 9}};
-    EXPECT_EQ(ai.size(), 9);
+    EXPECT_EQ(ai.outputSize(), 9);
+    EXPECT_EQ(ai.inputLayer(), InputLayer({1, 2, 3, 4, 5, 6, 7, 8, 9}));
     verify(ai.calculate(), {1, 2, 3, 4, 5, 6, 7, 8, 9});
 }
 
 TEST(AiTest, testTwoLayers)
 {
     Ai ai{{1, 2, 3}};
-    EXPECT_EQ(ai.size(), 3);
-    FullyConnectedLayer *fcl = new FullyConnectedLayer{2, 3};
+    EXPECT_EQ(ai.outputSize(), 3);
+    FullyConnectedLayer *fcl = new FullyConnectedLayer{3, 2};
     fcl->setGains(1, {1, 1, 1});
     ai.addLayer(fcl);
-    EXPECT_EQ(ai.size(), 2);
+    EXPECT_EQ(ai.outputSize(), 2);
 
     auto out = ai.calculate();
     verify(out, {2, 6});
@@ -39,7 +40,7 @@ TEST(AiTest, testTwoLayers)
 TEST(AiTest, copyConstructor)
 {
     Ai ai{{1, 2, 3}};
-    FullyConnectedLayer *fcl = new FullyConnectedLayer{2, 3};
+    FullyConnectedLayer *fcl = new FullyConnectedLayer{3, 2};
     fcl->setGains(1, {1, 1, 1});
     ai.addLayer(fcl);
     Ai copy{ai};
@@ -51,7 +52,7 @@ TEST(AiTest, copyConstructor)
 TEST(AiTest, assignment)
 {
     Ai ai{{1, 2, 3}};
-    FullyConnectedLayer *fcl = new FullyConnectedLayer{2, 3};
+    FullyConnectedLayer *fcl = new FullyConnectedLayer{3, 2};
     fcl->setGains(1, {1, 1, 1});
     ai.addLayer(fcl);
     Ai copy{2};
@@ -61,7 +62,7 @@ TEST(AiTest, assignment)
     verify(out, {2, 6});
 
     Ai ai2{{4, 5, 6}};
-    fcl = new FullyConnectedLayer{2, 3};
+    fcl = new FullyConnectedLayer{3, 2};
     fcl->setGains(0, {5, 8, 6});
     fcl->setGains(1, {0, 1, 2});
     ai2.addLayer(fcl);

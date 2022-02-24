@@ -9,7 +9,7 @@
 class FullyConnectedLayer : public InnerLayer
 {
 public:
-    FullyConnectedLayer(int size, int inputSize);
+    FullyConnectedLayer(int inputSize, int outputSize);
     [[nodiscard]] FullyConnectedLayer *clone() const override;
 
     [[nodiscard]] int outputSize() const override;

@@ -41,7 +41,7 @@ TEST(LayerTest, testInputLayer)
 TEST(LayerTest, testFullyConnectedLayer)
 {
     std::vector<float> input{1, 2, 3, 4, 5, 6};
-    FullyConnectedLayer fcl{4, 6};
+    FullyConnectedLayer fcl{6, 4};
     EXPECT_EQ(fcl.gain(2, 5), 1.f / 6);
     EXPECT_EQ(fcl.bias(2), 0);
 
@@ -86,7 +86,7 @@ TEST(LayerTest, testFullyConnectedLayer)
 TEST(LayerTest, testFullyConnectedLayerModify)
 {
     std::vector<float> input{2, 3, 5, 7};
-    FullyConnectedLayer fcl{2, 4};
+    FullyConnectedLayer fcl{4, 2};
     fcl.setGains({{1, 2, 3, 4}, {5, 6, 7, 8}});
     fcl.setBias({5, -5});
     auto output = fcl.calculate(input);
@@ -119,7 +119,7 @@ TEST(LayerTest, setValuesExceptionTest)
     InputLayer il = InputLayer{1, 2, 3, 5};
     ASSERT_THROW(il.set({0, 0, 0}), std::length_error);
 
-    FullyConnectedLayer fcl{3, 4};
+    FullyConnectedLayer fcl{4, 3};
     ASSERT_THROW(fcl.setGain(1, 4, 0), std::out_of_range);
     ASSERT_THROW(fcl.setGain(-1, 0, 0), std::out_of_range);
     ASSERT_THROW(fcl.setGains(3, {0, 0, 0, 0}), std::out_of_range);
