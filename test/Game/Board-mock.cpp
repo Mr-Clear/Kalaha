@@ -14,13 +14,13 @@ MockBoard::MockBoard(int numberOfHouses, const std::initializer_list<int> &seeds
     EXPECT_CALL(*this, storeId()).WillRepeatedly(Return(numberOfHouses + 1));
     for (PlayerNumber p : ALL_PLAYERS)
     {
-        for (int i = 1; i <= numberOfHouses + 1; i++)
+        for (int i = 1; i <= numberOfHouses + 1; ++i)
         {
             const Pit pit{p, i};
             if (seedsI != seedsPerPit.end())
             {
                 EXPECT_CALL(*this, seedCount(pit)).WillRepeatedly(Return(*seedsI));
-                seedsI++;
+                ++seedsI;
             }
             else
             {

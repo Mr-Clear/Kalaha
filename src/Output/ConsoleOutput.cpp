@@ -52,7 +52,7 @@ void ConsoleOutput::showTournamentEnd(const std::vector<Tournament::Outcome> &ou
         if (maxName < len)
             maxName = len;
     }
-    m_stream << "Tournament ended. " << " Winner is " << sorted.at(0).player->name() << std::endl;
+    m_stream << "Tournament ended. Winner is " << sorted.at(0).player->name() << "." << std::endl;
     m_stream << "╔" << rep(maxName, "═") << "╤═══════╤═══════╤═══════╤═══════╗" << endl;
     m_stream << "║" << rep(maxName - 6, " ") << "Player│   Wins│Defeats│  Draws│ Stones║" << endl;
     m_stream << "╟" << rep(maxName, "─") << "┼───────┼───────┼───────┼───────╢" << endl;

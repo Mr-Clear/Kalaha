@@ -11,6 +11,11 @@ AiPlayer::AiPlayer(const std::string &name, const Ai &ai) :
     m_ai{ai}
 { }
 
+const Ai &AiPlayer::ai() const
+{
+    return m_ai;
+}
+
 Pit AiPlayer::selectHouse(const AbstractBoard &board, PlayerNumber playerNumber) const
 {
     assert(board.numberOfHouses() == m_ai.outputSize());
@@ -21,12 +26,12 @@ Pit AiPlayer::selectHouse(const AbstractBoard &board, PlayerNumber playerNumber)
         input.emplace_back(board.seedCount({playerNumber, i}));
     auto r = m_ai.calculate(input);
 
-    for (int i = 0; i < board.numberOfHouses(); i++)
+    for (int i = 0; i < board.numberOfHouses(); ++i)
     {
         float maxV = -std::numeric_limits<float>::infinity();
         int maxi = 0;
         {
-            for (int i = 0; i < r.size(); i++)
+            for (int i = 0; i < r.size(); ++i)
             {
                 const float v = r[i];
                 if (maxV < v)

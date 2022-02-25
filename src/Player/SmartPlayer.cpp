@@ -12,7 +12,7 @@ Pit SmartPlayer::selectHouse(const AbstractBoard &board, PlayerNumber playerNumb
 {
     std::vector<int> storeSeeds;
     auto options = getOptions(board, playerNumber);
-    for (int i = 1; i <= board.numberOfHouses(); i++)
+    for (int i = 1; i <= board.numberOfHouses(); ++i)
     {
         Pit house{playerNumber, i};
         if (board.seedCount(house))

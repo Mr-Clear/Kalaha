@@ -8,6 +8,8 @@ class AiPlayer : public AbstractPlayer
 public:
     explicit AiPlayer(const std::string &name, const Ai &ai);
 
+    [[nodiscard]] const Ai &ai() const;
+
     [[nodiscard]] Pit selectHouse(const AbstractBoard &board, PlayerNumber playerNumber) const override;
 
 private:

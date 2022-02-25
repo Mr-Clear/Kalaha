@@ -107,8 +107,8 @@ TEST(LayerTest, setValuesExceptionTest)
 
 TEST(LayerTest, relu)
 {
-    for (int i = -30; i <= 0; i++)
+    for (int i = -30; i <= 0; ++i)
         EXPECT_EQ(relu(i / 10.f), 0);
-    for (int i = 0; i < 30; i++)
+    for (int i = 0; i < 30; ++i)
         EXPECT_EQ(relu(i / 10.f), i / 10.f);
 }

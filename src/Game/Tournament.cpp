@@ -18,11 +18,11 @@ std::vector<Tournament::Outcome> Tournament::run()
     outcome.reserve(m_players.size());
     for (const auto &p : m_players)
         outcome.emplace_back(p);
-    for (int i = 0; i < m_players.size(); i++)
+    for (int i = 0; i < m_players.size(); ++i)
     {
         const auto &playerOne = m_players.at(i);
 
-        for (int j = 0; j < m_players.size(); j++)
+        for (int j = 0; j < m_players.size(); ++j)
         {
             if (i == j)
              continue;
@@ -37,18 +37,18 @@ std::vector<Tournament::Outcome> Tournament::run()
             outcome[j].totalSones += o.seeds.second;
             if (o.winner == PlayerNumber::One)
             {
-                outcome[i].wins++;
-                outcome[j].defeats++;
+                ++outcome[i].wins;
+                ++outcome[j].defeats;
             }
             else if (o.winner == PlayerNumber::Two)
             {
-                outcome[i].defeats++;
-                outcome[j].wins++;
+                ++outcome[i].defeats;
+                ++outcome[j].wins;
             }
             else if (!o.winner)
             {
-                outcome[i].draws++;
-                outcome[j].draws++;
+                ++outcome[i].draws;
+                ++outcome[j].draws;
             }
             else
                 assert(false);
