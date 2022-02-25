@@ -10,6 +10,8 @@
 class Board : public AbstractBoard
 {
 public:
+    using value_type = Pit;
+
     explicit Board(const Rules &rules);
     Board(const AbstractBoard &o);
 
@@ -42,6 +44,8 @@ public:
         Pit m_currentPit;
         bool m_end;
     };
+    using iterator = Iterator;
+    using const_iterator = Iterator;
     Iterator begin() const;
     Iterator end() const;
 

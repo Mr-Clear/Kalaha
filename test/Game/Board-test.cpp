@@ -1,9 +1,12 @@
 #include "Game/Board.h"
 
+#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 using PlayerNumber::One;
 using PlayerNumber::Two;
+
+using testing::ElementsAre;
 
 namespace {
 void verifySeeds(const Board &board, const std::vector<int> &seeds)

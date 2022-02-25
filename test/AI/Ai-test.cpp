@@ -1,25 +1,16 @@
 #include "AI/Ai.h"
 #include "AI/FullyConnectedLayer.h"
 
+#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-namespace {
-void verify(const std::vector<float> &v, const std::initializer_list<float> &ex)
-{
-    EXPECT_EQ(v.size(), ex.size());
-    auto iv = ex.begin();
-    for (int i = 0; i < ex.size(); ++i, ++iv)
-    {
-        EXPECT_EQ(v.at(i), *iv) << "at index " << i;
-    }
-}
-}
+using testing::ElementsAre;
 
 TEST(AiTest, testInputOnly)
 {
     Ai ai;
     EXPECT_EQ(ai.outputSize(), 0);
-    verify(ai.calculate({1, 2, 3, 4, 5, 6, 7, 8, 9}), {1, 2, 3, 4, 5, 6, 7, 8, 9});
+    EXPECT_THAT(ai.calculate({1, 2, 3, 4, 5, 6, 7, 8, 9}), ElementsAre(1, 2, 3, 4, 5, 6, 7, 8, 9));
 }
 
 TEST(AiTest, testTwoLayers)
@@ -31,7 +22,7 @@ TEST(AiTest, testTwoLayers)
     EXPECT_EQ(ai.outputSize(), 2);
 
     auto out = ai.calculate({1, 2, 3});
-    verify(out, {2, 6});
+    EXPECT_THAT(out, ElementsAre(2, 6));
 }
 
 TEST(AiTest, copyConstructor)
@@ -43,7 +34,7 @@ TEST(AiTest, copyConstructor)
     Ai copy{ai};
 
     auto out = copy.calculate({1, 2, 3});
-    verify(out, {2, 6});
+    EXPECT_THAT(out, ElementsAre(2, 6));
 }
 
 TEST(AiTest, assignment)
@@ -56,7 +47,7 @@ TEST(AiTest, assignment)
     copy = ai;
 
     auto out = copy.calculate({1, 2, 3});
-    verify(out, {2, 6});
+    EXPECT_THAT(out, ElementsAre(2, 6));
 
     Ai ai2;
     fcl = new FullyConnectedLayer{3, 2};
@@ -66,7 +57,7 @@ TEST(AiTest, assignment)
 
     copy = ai2;
     out = copy.calculate({4, 5, 6});
-    verify(out, {96, 17});
+    EXPECT_THAT(out, ElementsAre(96, 17));
 }
 
 TEST(AiTest, wrongInputException)
