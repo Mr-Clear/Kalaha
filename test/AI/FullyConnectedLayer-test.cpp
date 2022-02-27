@@ -39,12 +39,12 @@ TEST(FullyConnectedLayerTest, set)
     output = fcl.calculate(input);
     EXPECT_THAT(output, ElementsAre(70, 280, 490, 760));
 
-    fcl.setBias({-1, 1, -2, 2});
+    fcl.setBiases({-1, 1, -2, 2});
     EXPECT_EQ(fcl.bias(2), -2);
     output = fcl.calculate(input);
     EXPECT_THAT(output, ElementsAre(69, 281, 488, 762));
 
-    fcl.setBias(2, 5);
+    fcl.setBiases(2, 5);
     EXPECT_EQ(fcl.bias(2), 5);
     output = fcl.calculate(input);
     EXPECT_THAT(output, ElementsAre(69, 281, 495, 762));
@@ -55,7 +55,7 @@ TEST(FullyConnectedLayerTest, modify)
     std::vector<float> input{2, 3, 5, 7};
     FullyConnectedLayer fcl{4, 2};
     fcl.setGains({{1, 2, 3, 4}, {5, 6, 7, 8}});
-    fcl.setBias({5, -5});
+    fcl.setBiases({5, -5});
     auto output = fcl.calculate(input);
     EXPECT_THAT(output, ElementsAre(56, 114));
 
@@ -75,13 +75,84 @@ TEST(FullyConnectedLayerTest, modify)
 TEST(FullyConnectedLayerTest, setValuesExceptionTest)
 {
     FullyConnectedLayer fcl{4, 3};
-    ASSERT_THROW(fcl.setGain(1, 4, 0), std::out_of_range);
-    ASSERT_THROW(fcl.setGain(-1, 0, 0), std::out_of_range);
-    ASSERT_THROW(fcl.setGains(3, {0, 0, 0, 0}), std::out_of_range);
-    ASSERT_THROW(fcl.setGains(1, {0, 0}), std::length_error);
-    ASSERT_THROW(fcl.setGains({{0, 0, 0, 0}, {0, 0, 0, 0}}), std::length_error);
-    ASSERT_THROW(fcl.setGains({{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0}}), std::length_error);
+    EXPECT_THROW(fcl.setGain(1, 4, 0), std::out_of_range);
+    EXPECT_THROW(fcl.setGain(-1, 0, 0), std::out_of_range);
+    EXPECT_THROW(fcl.setGains(3, {0, 0, 0, 0}), std::out_of_range);
+    EXPECT_THROW(fcl.setGains(1, {0, 0}), std::length_error);
+    EXPECT_THROW(fcl.setGains({{0, 0, 0, 0}, {0, 0, 0, 0}}), std::length_error);
+    EXPECT_THROW(fcl.setGains({{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0}}), std::length_error);
 
-    ASSERT_THROW(fcl.setBias(4, 0), std::out_of_range);
-    ASSERT_THROW(fcl.setBias({0, 0}), std::length_error);
+    EXPECT_THROW(fcl.setBiases(4, 0), std::out_of_range);
+    EXPECT_THROW(fcl.setBiases({0, 0}), std::length_error);
+}
+
+TEST(FullyConnectedLayerTest, serialize)
+{
+    FullyConnectedLayer fcl{3, 2};
+    EXPECT_TRUE(dynamic_cast<Serializable*>(&fcl));
+    fcl.setGains({{0, 1, 2,}, {10, 11, 12}});
+    fcl.setBiases({-1, -2});
+    auto j = fcl.toJson();
+    nlohmann::json x{{"FullyConnectedLayer", {{"gains", {{0., 1., 2.}, {10., 11., 12.}}}, {"biases", {-1., -2.}}}}};
+    EXPECT_EQ(j, x);
+}
+
+TEST(FullyConnectedLayerTest, deserialize)
+{
+    FullyConnectedLayer fcl{0, 0};
+    fcl.fromJson({{"gains", {{5, 6}, {7, 8}, {9, 10}}}, {"biases", {-3, -4, -5}}});
+    EXPECT_EQ(fcl.inputSize(), 2);
+    EXPECT_EQ(fcl.outputSize(), 3);
+    EXPECT_EQ(fcl.gain(0, 0), 5);
+    EXPECT_EQ(fcl.gain(2, 1), 10);
+    EXPECT_EQ(fcl.bias(1), -4);
+    fcl = FullyConnectedLayer{nlohmann::json{{"FullyConnectedLayer", {{"gains", {{1, 2}, {3, 4}}}, {"biases", {5, 6}}}}}};
+    EXPECT_EQ(fcl.outputSize(), 2);
+    EXPECT_EQ(fcl.gain(0, 0), 1);
+    EXPECT_EQ(fcl.gain(1, 1), 4);
+    EXPECT_EQ(fcl.bias(1), 6);
+}
+
+TEST(FullyConnectedLayerTest, deserializeErrors)
+{
+    FullyConnectedLayer fcl{3, 5};
+    EXPECT_NO_THROW(fcl.fromJson({}));
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_THROW(fcl.fromJson({{"biases", {-3, -4, -5}}}), std::invalid_argument);
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_THROW(fcl.fromJson({{"gains", {{1, 2}, {3, 4}}}}), std::invalid_argument);
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_THROW(fcl.fromJson({{"gains", {}, {"biases", {5, 6}}}}), std::invalid_argument);
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_THROW(fcl.fromJson({{"gains", {{1, 2}, {3, 4}}}, {"biases", {}}}), std::invalid_argument);
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_THROW(fcl.fromJson({{"gains", "Hello!"}, {"biases", {5, 6}}}), std::invalid_argument);
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_THROW(fcl.fromJson({{"gains", {{1, 2}, {3, 4}}}, {"biases", {5, 6, 7}}}), std::invalid_argument);
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_THROW(fcl.fromJson({{"gains", {{1, 2}, {3, 4}, {5}}}, {"biases", {6, 7, 8}}}), std::invalid_argument);
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_THROW(fcl.fromJson({{"gains", {{}, {}}}, {"biases", {6, 7}}}), std::invalid_argument);
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_THROW(fcl.fromJson({{"gains", {{1, 2}, {"three", 4}}}, {"biases", {5, 6}}}), std::invalid_argument);
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_THROW(fcl.fromJson({{"gains", {{1}, "Foo"}}, {"biases", {5, 6}}}), std::invalid_argument);
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_THROW(fcl.fromJson({{"gains", {{1, 2}, {3, 4}}}, {"biases", "Bar"}}), std::invalid_argument);
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_THROW(fcl.fromJson({{"gains", {{1, 2}, {3, 4}}}, {"biases", {5, "six"}}}), std::invalid_argument);
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_EQ(fcl.outputSize(), 0);
 }

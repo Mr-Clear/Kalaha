@@ -25,7 +25,7 @@ void tournament()
     }
 
     std::unique_ptr<AbstractLayer> l1{std::make_unique<FullyConnectedLayer>(6, 8)};
-    std::unique_ptr<AbstractLayer> l2{std::make_unique<FunctionLayer>(8, gelu)};
+    std::unique_ptr<AbstractLayer> l2{std::make_unique<FunctionLayer>(FunctionLayer::RELU)};
     std::unique_ptr<AbstractLayer> l3{std::make_unique<FullyConnectedLayer>(8, 6)};
     Ai baseAi;
     baseAi.addLayer(l1);

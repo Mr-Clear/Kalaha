@@ -3,19 +3,32 @@
 #include <cassert>
 
 FullyConnectedLayer::FullyConnectedLayer(int inputSize, int outputSize) :
-    AbstractLayer{inputSize},
+    AbstractLayer{"FullyConnectedLayer", [ ] { return new FullyConnectedLayer(0, 0); }},
     m_gains(outputSize, std::vector<float>(inputSize, 1.f / inputSize)),
-    m_bias(outputSize, 0)
+    m_biases(outputSize, 0)
 { }
+
+FullyConnectedLayer::FullyConnectedLayer(const nlohmann::json &json) :
+    FullyConnectedLayer{0, 0}
+{
+    fromJson(json);
+}
 
 FullyConnectedLayer *FullyConnectedLayer::clone() const
 {
     return new FullyConnectedLayer(*this);
 }
 
+int FullyConnectedLayer::inputSize() const
+{
+    if (m_gains.empty())
+        return 0;
+    return m_gains.front().size();
+}
+
 int FullyConnectedLayer::outputSize() const
 {
-    return m_bias.size();
+    return m_biases.size();
 }
 
 std::vector<float> FullyConnectedLayer::calculate(const std::vector<float> &input)
@@ -25,7 +38,7 @@ std::vector<float> FullyConnectedLayer::calculate(const std::vector<float> &inpu
     for (int i = 0; i < outputSize(); ++i)
     {
         const auto &g = m_gains.at(i);
-        float val = m_bias.at(i);
+        float val = m_biases.at(i);
         for (int j = 0; j < input.size(); ++j)
         {
             val += input[j] * g.at(j);
@@ -42,7 +55,7 @@ float FullyConnectedLayer::gain(int myId, int preId) const
 
 float FullyConnectedLayer::bias(int id) const
 {
-    return m_bias.at(id);
+    return m_biases.at(id);
 }
 
 void FullyConnectedLayer::setGain(int myId, int preId, float gain)
@@ -72,16 +85,16 @@ void FullyConnectedLayer::setGains(int id, const std::initializer_list<float> &g
     m_gains.at(id) = gainValues;
 }
 
-void FullyConnectedLayer::setBias(const std::initializer_list<float> &biasValues)
+void FullyConnectedLayer::setBiases(const std::initializer_list<float> &biasValues)
 {
     if (biasValues.size() != outputSize())
         throw std::length_error{"Bias values size must be " + std::to_string(outputSize()) + " but is " + std::to_string(biasValues.size()) + "."};
-    m_bias = biasValues;
+    m_biases = biasValues;
 }
 
-void FullyConnectedLayer::setBias(int id, float bias)
+void FullyConnectedLayer::setBiases(int id, float bias)
 {
-    m_bias.at(id) = bias;
+    m_biases.at(id) = bias;
 }
 
 void FullyConnectedLayer::manipulateGain(const std::function<float (float)> &fn)
@@ -98,7 +111,7 @@ void FullyConnectedLayer::manipulateGain(const std::function<float (float)> &fn)
 
 void FullyConnectedLayer::manipulateBias(const std::function<float (float)> &fn)
 {
-    for (float &b : m_bias)
+    for (float &b : m_biases)
         b = fn(b);
 }
 
@@ -108,19 +121,77 @@ void FullyConnectedLayer::manipulateAll(const std::function<float (float)> &fn)
     manipulateBias(fn);
 }
 
-std::string FullyConnectedLayer::toJson() const
+void FullyConnectedLayer::fromJson(const nlohmann::json &json)
 {
-    std::string s("{\"gains\":[");
+    m_gains.clear();
+    m_biases.clear();
+
+    nlohmann::json j;
+    if (json.contains("FullyConnectedLayer"))
+        j = json["FullyConnectedLayer"];
+    else
+        j = json;
+
+    std::vector<std::vector<float>> gains;
+    std::vector<float> biases;
+    if (j.empty())
+        return;
+
+    for (const std::string &k : {std::string{"gains"}, {"biases"}})
+    {
+        if (!j.contains(k))
+            throw std::invalid_argument("JSON for FullyConnectedLayer misses " + k + "!");
+        if (j[k].empty())
+            throw std::invalid_argument("JSON for FullyConnectedLayer contains no " + k + "!");
+        if (!j[k].is_array())
+            throw std::invalid_argument("JSON for FullyConnectedLayer value " + k + " in no array!");
+    }
+
+    if (j["gains"].size() != j["biases"].size())
+        throw std::invalid_argument("JSON for FullyConnectedLayer gains and biases have different sizes!");
+
+    int outSize = -1;
+    for (const nlohmann::json &neuronGains : j["gains"])
+    {
+        if (neuronGains.size() == 0)
+            throw std::invalid_argument("JSON for FullyConnectedLayer gains are empty!");
+        if (outSize == -1)
+            outSize = neuronGains.size();
+        else
+            if (neuronGains.size() != outSize)
+                throw std::invalid_argument("JSON for FullyConnectedLayer gains have varying size!");
+        std::vector<float> g;
+        for (const nlohmann::json &v : neuronGains)
+        {
+            if (!v.is_number())
+                throw std::invalid_argument("JSON for FullyConnectedLayer contains non numeric gain!");
+            g.emplace_back(v);
+        }
+        gains.push_back(g);
+    }
+    for (const nlohmann::json &v : j["biases"])
+    {
+        if (!v.is_number())
+            throw std::invalid_argument("JSON for FullyConnectedLayer contains non numeric bias!");
+        biases.push_back(v);
+    }
+
+    m_gains = gains;
+    m_biases = biases;
+}
+
+nlohmann::json FullyConnectedLayer::toJson() const
+{
+    nlohmann::json neuronGains = nlohmann::json::array();
     for (const auto &g : m_gains)
     {
-        s += "[";
+        auto gains = nlohmann::json::array();
         for (float v : g)
-            s += std::to_string(v) + ",";
-        s += "],";
+            gains.push_back(v);
+        neuronGains.push_back(gains);
     }
-    s += "],biases[";
-    for (float b : m_bias)
-        s += std::to_string(b) + ",";
-    s += "]}";
-    return s;
+    nlohmann::json biases = nlohmann::json::array();
+    for (float b : m_biases)
+        biases.push_back(b);
+    return {{"FullyConnectedLayer", {{"gains", neuronGains}, {"biases", biases}}}};
 }
