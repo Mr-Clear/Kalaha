@@ -78,24 +78,22 @@ TEST(AiTest, serialize)
     ai.addLayer(new FullyConnectedLayer{3, 2});
     ai.addLayer(FunctionLayer::GELU.clone());
     ai.addLayer(new FullyConnectedLayer{2, 1});
-    const float gain = 1 / 3.f;
     const json out = ai.toJson();
-    json exp{{"layers",  {{{"FullyConnectedLayer", {{"gains", {{gain, gain, gain}, {gain, gain, gain}}},
-                                                    {"biases", {0., 0.}}}}},
-                          {{"FunctionLayer", "GELU"}},
-                          {{"FullyConnectedLayer", {{"gains", {{.5, .5}}},
-                                                    {"biases", {0.}}}}}}}};
+    json exp = R"({"layers":[{"LayerType": "FullyConnectedLayer",)"
+                           R"("biases": [0.0,0.0],)"
+                           R"("gains": [[0.3333333432674408,0.3333333432674408,0.3333333432674408],)"
+                                     R"([0.3333333432674408,0.3333333432674408,0.3333333432674408]]},)"
+                          R"({"LayerType": "FunctionLayer", "Function": "GELU"},)"
+                          R"({"LayerType": "FullyConnectedLayer", "biases": [0.0], "gains": [[0.5,0.5]]}]})"_json;
     EXPECT_EQ(out, exp);
 }
 
 TEST(AiTest, deserialize)
 {
     Ai ai;
-    ai.fromJson({{"layers",  {{{"FullyConnectedLayer", {{"gains", {{1, 2, 3}, {4, 5, 6}}},
-                                                        {"biases", {7, 8}}}}},
-                              {{"FunctionLayer", "RELU"}},
-                              {{"FullyConnectedLayer", {{"gains", {{15, 10}}},
-                                                        {"biases", {11}}}}}}}});
+    ai.fromJson(R"({"layers": [{"LayerType": "FullyConnectedLayer", "gains": [[1, 2, 3], [4, 5, 6]], "biases": [7, 8]},)"
+                            R"({"LayerType": "FunctionLayer", "Function": "RELU"},)"
+                            R"({"LayerType": "FullyConnectedLayer", "gains": [[15, 10]], "biases": [11]}]})"_json);
     const auto out = ai.calculate({-1, -2, -3});
     EXPECT_THAT(out, ElementsAre(11));
 }

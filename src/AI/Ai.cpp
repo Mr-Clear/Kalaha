@@ -97,7 +97,6 @@ void Ai::mutate(float stddev)
         if (fc)
         {
             fc->manipulateAll([stddev, &gen] (float v) {
-
                 std::normal_distribution<> d{v, stddev};
                 return d(gen);
             });

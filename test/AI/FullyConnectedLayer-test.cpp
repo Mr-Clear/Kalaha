@@ -93,20 +93,20 @@ TEST(FullyConnectedLayerTest, serialize)
     fcl.setGains({{0, 1, 2,}, {10, 11, 12}});
     fcl.setBiases({-1, -2});
     auto j = fcl.toJson();
-    nlohmann::json x{{"FullyConnectedLayer", {{"gains", {{0., 1., 2.}, {10., 11., 12.}}}, {"biases", {-1., -2.}}}}};
+    nlohmann::json x = R"({"LayerType": "FullyConnectedLayer", "gains": [[0.0, 1.0, 2.0], [10.0, 11.0, 12.0]], "biases": [-1.0, -2.0]})"_json;
     EXPECT_EQ(j, x);
 }
 
 TEST(FullyConnectedLayerTest, deserialize)
 {
     FullyConnectedLayer fcl{0, 0};
-    fcl.fromJson({{"gains", {{5, 6}, {7, 8}, {9, 10}}}, {"biases", {-3, -4, -5}}});
+    fcl.fromJson(R"({"LayerType": "FullyConnectedLayer", "gains": [[5, 6], [7, 8], [9, 10]], "biases": [-3, -4, -5]})"_json);
     EXPECT_EQ(fcl.inputSize(), 2);
     EXPECT_EQ(fcl.outputSize(), 3);
     EXPECT_EQ(fcl.gain(0, 0), 5);
     EXPECT_EQ(fcl.gain(2, 1), 10);
     EXPECT_EQ(fcl.bias(1), -4);
-    fcl = FullyConnectedLayer{nlohmann::json{{"FullyConnectedLayer", {{"gains", {{1, 2}, {3, 4}}}, {"biases", {5, 6}}}}}};
+    fcl = FullyConnectedLayer{R"({"LayerType": "FullyConnectedLayer", "gains": [[1, 2], [3, 4]], "biases": [5, 6]})"_json};
     EXPECT_EQ(fcl.outputSize(), 2);
     EXPECT_EQ(fcl.gain(0, 0), 1);
     EXPECT_EQ(fcl.gain(1, 1), 4);
@@ -116,43 +116,46 @@ TEST(FullyConnectedLayerTest, deserialize)
 TEST(FullyConnectedLayerTest, deserializeErrors)
 {
     FullyConnectedLayer fcl{3, 5};
-    EXPECT_NO_THROW(fcl.fromJson({}));
+    EXPECT_THROW(fcl.fromJson({}), std::invalid_argument);
     EXPECT_EQ(fcl.outputSize(), 0);
     EXPECT_EQ(fcl.outputSize(), 0);
-    EXPECT_THROW(fcl.fromJson({{"biases", {-3, -4, -5}}}), std::invalid_argument);
+    EXPECT_THROW(fcl.fromJson(R"({"LayerType": "Foo", "gains": [[0, 1, 2], [10, 11, 12]], "biases": [-1, -2]})"_json), std::invalid_argument);
     EXPECT_EQ(fcl.outputSize(), 0);
     EXPECT_EQ(fcl.outputSize(), 0);
-    EXPECT_THROW(fcl.fromJson({{"gains", {{1, 2}, {3, 4}}}}), std::invalid_argument);
+    EXPECT_THROW(fcl.fromJson(R"({"LayerType": "FullyConnectedLayer", "biases": [-3, -4, -5]})"_json), std::invalid_argument);
     EXPECT_EQ(fcl.outputSize(), 0);
     EXPECT_EQ(fcl.outputSize(), 0);
-    EXPECT_THROW(fcl.fromJson({{"gains", {}, {"biases", {5, 6}}}}), std::invalid_argument);
+    EXPECT_THROW(fcl.fromJson(R"({"LayerType": "FullyConnectedLayer", "gains": [[1, 2], [3, 4]]})"_json), std::invalid_argument);
     EXPECT_EQ(fcl.outputSize(), 0);
     EXPECT_EQ(fcl.outputSize(), 0);
-    EXPECT_THROW(fcl.fromJson({{"gains", {{1, 2}, {3, 4}}}, {"biases", {}}}), std::invalid_argument);
+    EXPECT_THROW(fcl.fromJson(R"({"LayerType": "FullyConnectedLayer", "gains": [], "biases": [5, 6]})"_json), std::invalid_argument);
     EXPECT_EQ(fcl.outputSize(), 0);
     EXPECT_EQ(fcl.outputSize(), 0);
-    EXPECT_THROW(fcl.fromJson({{"gains", "Hello!"}, {"biases", {5, 6}}}), std::invalid_argument);
+    EXPECT_THROW(fcl.fromJson(R"({"LayerType": "FullyConnectedLayer", "gains": [[1, 2], [3, 4]], "biases": []})"_json), std::invalid_argument);
     EXPECT_EQ(fcl.outputSize(), 0);
     EXPECT_EQ(fcl.outputSize(), 0);
-    EXPECT_THROW(fcl.fromJson({{"gains", {{1, 2}, {3, 4}}}, {"biases", {5, 6, 7}}}), std::invalid_argument);
+    EXPECT_THROW(fcl.fromJson(R"({"LayerType": "FullyConnectedLayer", "gains": "Hello!", "biases": [5, 6]})"_json), std::invalid_argument);
     EXPECT_EQ(fcl.outputSize(), 0);
     EXPECT_EQ(fcl.outputSize(), 0);
-    EXPECT_THROW(fcl.fromJson({{"gains", {{1, 2}, {3, 4}, {5}}}, {"biases", {6, 7, 8}}}), std::invalid_argument);
+    EXPECT_THROW(fcl.fromJson(R"({"LayerType": "FullyConnectedLayer", "gains": [[1, 2], [3, 4]], "biases": [5, 6, 7]})"_json), std::invalid_argument);
     EXPECT_EQ(fcl.outputSize(), 0);
     EXPECT_EQ(fcl.outputSize(), 0);
-    EXPECT_THROW(fcl.fromJson({{"gains", {{}, {}}}, {"biases", {6, 7}}}), std::invalid_argument);
+    EXPECT_THROW(fcl.fromJson(R"({"LayerType": "FullyConnectedLayer", "gains": [[1, 2], [3, 4], [5]], "biases": [6, 7, 8]})"_json), std::invalid_argument);
     EXPECT_EQ(fcl.outputSize(), 0);
     EXPECT_EQ(fcl.outputSize(), 0);
-    EXPECT_THROW(fcl.fromJson({{"gains", {{1, 2}, {"three", 4}}}, {"biases", {5, 6}}}), std::invalid_argument);
+    EXPECT_THROW(fcl.fromJson(R"({"LayerType": "FullyConnectedLayer", "gains": [[], []], "biases": [6, 7]})"_json), std::invalid_argument);
     EXPECT_EQ(fcl.outputSize(), 0);
     EXPECT_EQ(fcl.outputSize(), 0);
-    EXPECT_THROW(fcl.fromJson({{"gains", {{1}, "Foo"}}, {"biases", {5, 6}}}), std::invalid_argument);
+    EXPECT_THROW(fcl.fromJson(R"({"LayerType": "FullyConnectedLayer", "gains": [[1, 2], ["three", 4]], "biases": [5, 6]})"_json), std::invalid_argument);
     EXPECT_EQ(fcl.outputSize(), 0);
     EXPECT_EQ(fcl.outputSize(), 0);
-    EXPECT_THROW(fcl.fromJson({{"gains", {{1, 2}, {3, 4}}}, {"biases", "Bar"}}), std::invalid_argument);
+    EXPECT_THROW(fcl.fromJson(R"({"LayerType": "FullyConnectedLayer", "gains": [[1], "Foo"], "biases": [5, 6]})"_json), std::invalid_argument);
     EXPECT_EQ(fcl.outputSize(), 0);
     EXPECT_EQ(fcl.outputSize(), 0);
-    EXPECT_THROW(fcl.fromJson({{"gains", {{1, 2}, {3, 4}}}, {"biases", {5, "six"}}}), std::invalid_argument);
+    EXPECT_THROW(fcl.fromJson(R"({"LayerType": "FullyConnectedLayer", "gains": [[1, 2], [3, 4]], "biases": "Bar"})"_json), std::invalid_argument);
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_EQ(fcl.outputSize(), 0);
+    EXPECT_THROW(fcl.fromJson(R"({"LayerType": "FullyConnectedLayer", "gains": [[1, 2], [3, 4]], "biases": [5, "six"]})"_json), std::invalid_argument);
     EXPECT_EQ(fcl.outputSize(), 0);
     EXPECT_EQ(fcl.outputSize(), 0);
 }

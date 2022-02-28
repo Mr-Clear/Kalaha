@@ -126,32 +126,28 @@ void FullyConnectedLayer::fromJson(const nlohmann::json &json)
     m_gains.clear();
     m_biases.clear();
 
-    nlohmann::json j;
-    if (json.contains("FullyConnectedLayer"))
-        j = json["FullyConnectedLayer"];
-    else
-        j = json;
+    verifyLayerType(json, "FullyConnectedLayer");
 
     std::vector<std::vector<float>> gains;
     std::vector<float> biases;
-    if (j.empty())
+    if (json.empty())
         return;
 
     for (const std::string &k : {std::string{"gains"}, {"biases"}})
     {
-        if (!j.contains(k))
+        if (!json.contains(k))
             throw std::invalid_argument("JSON for FullyConnectedLayer misses " + k + "!");
-        if (j[k].empty())
+        if (json[k].empty())
             throw std::invalid_argument("JSON for FullyConnectedLayer contains no " + k + "!");
-        if (!j[k].is_array())
+        if (!json[k].is_array())
             throw std::invalid_argument("JSON for FullyConnectedLayer value " + k + " in no array!");
     }
 
-    if (j["gains"].size() != j["biases"].size())
+    if (json["gains"].size() != json["biases"].size())
         throw std::invalid_argument("JSON for FullyConnectedLayer gains and biases have different sizes!");
 
     int outSize = -1;
-    for (const nlohmann::json &neuronGains : j["gains"])
+    for (const nlohmann::json &neuronGains : json["gains"])
     {
         if (neuronGains.size() == 0)
             throw std::invalid_argument("JSON for FullyConnectedLayer gains are empty!");
@@ -169,7 +165,7 @@ void FullyConnectedLayer::fromJson(const nlohmann::json &json)
         }
         gains.push_back(g);
     }
-    for (const nlohmann::json &v : j["biases"])
+    for (const nlohmann::json &v : json["biases"])
     {
         if (!v.is_number())
             throw std::invalid_argument("JSON for FullyConnectedLayer contains non numeric bias!");
@@ -193,5 +189,5 @@ nlohmann::json FullyConnectedLayer::toJson() const
     nlohmann::json biases = nlohmann::json::array();
     for (float b : m_biases)
         biases.push_back(b);
-    return {{"FullyConnectedLayer", {{"gains", neuronGains}, {"biases", biases}}}};
+    return {{"LayerType", "FullyConnectedLayer"}, {"gains", neuronGains}, {"biases", biases}};
 }

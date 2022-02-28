@@ -43,13 +43,16 @@ std::vector<float> FunctionLayer::calculate(const std::vector<float> &input)
 
 void FunctionLayer::fromJson(const nlohmann::json &json)
 {
-    auto j = json;
-    if (json.contains("FunctionLayer"))
-        j = json["FunctionLayer"];
-    if (!j.is_string())
+    verifyLayerType(json, "FunctionLayer");
+
+    if (!json.contains("Function"))
+        throw std::invalid_argument("JSON for FunctionLayer does not specify function: " + json.dump());
+
+    if (!json["Function"].is_string())
         throw std::invalid_argument("JSON for FunctionLayer does not conatin a name: " + json.dump());
 
-    std::string name = j;
+    const std::string name = json["Function"];
+
     if (!s_knownFunctions.contains(name))
         throw std::invalid_argument("JSON for FunctionLayer conatins unknown name: " + name);
 
@@ -58,5 +61,5 @@ void FunctionLayer::fromJson(const nlohmann::json &json)
 
 nlohmann::json FunctionLayer::toJson() const
 {
-    return {{"FunctionLayer", m_name}};
+    return {{"LayerType", "FunctionLayer"}, {"Function", m_name}};
 }

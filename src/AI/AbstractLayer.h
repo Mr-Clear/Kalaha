@@ -19,6 +19,7 @@ public:
 
 protected:
     static void registerLayer(const std::string &name, std::function<AbstractLayer*()> constructor);
+    void verifyLayerType(const nlohmann::json &json, const std::string &type);
 
 private:
     static std::unordered_map<std::string, std::function<AbstractLayer*()>> &constructors();

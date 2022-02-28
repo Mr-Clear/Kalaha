@@ -29,14 +29,14 @@ TEST(FunctionLayerTest, serialize)
 {
     FunctionLayer l = FunctionLayer::GELU;
     auto j = l.toJson();
-    nlohmann::json x{{"FunctionLayer", "GELU"}};
+    nlohmann::json x = R"({"LayerType": "FunctionLayer", "Function": "GELU"})"_json;
     EXPECT_EQ(j, x);
 }
 
 TEST(FunctionLayerTest, deserialize)
 {
     FunctionLayer l = FunctionLayer::GELU;
-    l.fromJson({{"FunctionLayer", "RELU"}});
+    l.fromJson(R"({"LayerType": "FunctionLayer", "Function": "RELU"})"_json);
     const std::vector<float> o = l.calculate({-1, 0, 1});
     EXPECT_THAT(o, testing::ElementsAre(0, 0, 1));
 }
@@ -44,7 +44,9 @@ TEST(FunctionLayerTest, deserialize)
 TEST(FunctionLayerTest, deserializeErrors)
 {
     FunctionLayer l = FunctionLayer::GELU;
-    EXPECT_THROW(l.fromJson({}), std::invalid_argument);
-    EXPECT_THROW(l.fromJson({{"FunctionLayer", 1}}), std::invalid_argument);
-    EXPECT_THROW(l.fromJson({{"FunctionLayer", "Foo"}}), std::invalid_argument);
+    EXPECT_THROW(l.fromJson("{}"_json), std::invalid_argument);
+    EXPECT_THROW(l.fromJson(R"({"LayerType": "Foo"})"_json), std::invalid_argument);
+    EXPECT_THROW(l.fromJson(R"({"LayerType": "FunctionLayer", "Function": {}})"_json), std::invalid_argument);
+    EXPECT_THROW(l.fromJson(R"({"LayerType": "FunctionLayer", "Function": 1})"_json), std::invalid_argument);
+    EXPECT_THROW(l.fromJson(R"({"LayerType": "FunctionLayer", "Function": "Foo"})"_json), std::invalid_argument);
 }
